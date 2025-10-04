@@ -1,0 +1,90 @@
+{
+  "common": {
+    "loading": "Đang tải...",
+    "error": "Có lỗi xảy ra",
+    "notFound": "Không tìm thấy trang",
+    "backToHome": "Trở về trang chủ"
+  },
+  "login": {
+    "title": "Đăng nhập",
+    "subTitle": "Chia sẻ code, truyền cảm hứng",
+    "pageDescription": "Vui lòng đăng nhập vào tài khoản của bạn",
+    "email": "Email",
+    "emailPlaceholder": "Nhập email của bạn",
+    "password": "Mật khẩu",
+    "passwordPlaceholder": "Nhập mật khẩu của bạn",
+    "rememberMe": "Ghi nhớ đăng nhập",
+    "forgotPassword": "Quên mật khẩu?",
+    "submitButton": "Đăng nhập",
+    "welcomeBack": "Chào mừng trở lại!",
+    "signInTitle": "Đăng nhập vào tài khoản",
+    "dontHaveAccount": "Chưa có tài khoản?",
+    "signUp": "Đăng ký",
+    "invalidCredentials": "Email hoặc mật khẩu không đúng",
+    "loginSuccess": "Đăng nhập thành công",
+    "somethingWentWrong": "Đã xảy ra lỗi, vui lòng thử lại",
+    "invalidEmail": "Vui lòng nhập địa chỉ email hợp lệ",
+    "passwordMinLength": "Mật khẩu phải có ít nhất 6 ký tự",
+    "followTerms": "Bằng cách tiếp tục, bạn đồng ý với",
+    "tos": "Điều khoản dịch vụ",
+    "pp": "Chính sách bảo mật"
+  },
+  "register": {
+    "title": "Đăng ký",
+    "subTitle": "Chia sẻ code, truyền cảm hứng",
+    "email": "Email",
+    "firstName": "Tên",
+    "lastName": "Họ",
+    "gender": "Giới tính",
+    "birthday": "Ngày sinh",
+    "password": "Mật khẩu",
+    "confirmPassword": "Xác nhận mật khẩu",
+    "male": "Nam",
+    "female": "Nữ",
+    "pageDescription": "Tạo tài khoản của bạn",
+    "createAccount": "Tạo tài khoản",
+    "signUpTitle": "Đăng ký để bắt đầu",
+    "name": "Tên",
+    "namePlaceholder": "Nguyễn Văn A",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "••••••••",
+    "confirmPasswordPlaceholder": "••••••••",
+    "alreadyHaveAccount": "Đã có tài khoản?",
+    "signIn": "Đăng nhập",
+    "nameMinLength": "Tên phải có ít nhất 2 ký tự",
+    "invalidEmail": "Email không hợp lệ",
+    "passwordMinLength": "Mật khẩu phải có ít nhất 6 ký tự",
+    "passwordsDontMatch": "Mật khẩu không khớp",
+    "registrationFailed": "Đăng ký thất bại",
+    "accountCreatedSuccess": "Tạo tài khoản thành công! Vui lòng đăng nhập.",
+    "somethingWentWrong": "Đã có lỗi xảy ra",
+    "copyright": "© 2024 CodeBin. Bảo lưu mọi quyền.",
+    "followTerms": "Bằng cách tiếp tục, bạn đồng ý với",
+    "tos": "Điều khoản dịch vụ",
+    "pp": "Chính sách bảo mật"
+  },
+  "dashboard": {
+    "title": "Bảng điều khiển",
+    "pageDescription": "Tổng quan bảng điều khiển",
+    "welcomeMessage": "Chào mừng đến với bảng điều khiển",
+    "statistics": {
+      "totalUsers": "Tổng người dùng",
+      "activeUsers": "Đang hoạt động",
+      "newBookings": "Đặt chỗ mới"
+    },
+    "recentActivities": "Hoạt động gần đây"
+  },
+  "api": {
+    "snippet": {
+      "notFound": "Không tìm thấy snippet",
+      "unauthorized": "Chưa đăng nhập",
+      "forbidden": "Bạn không có quyền xem snippet này",
+      "forbiddenEdit": "Bạn không có quyền chỉnh sửa snippet này",
+      "forbiddenDelete": "Bạn không có quyền xóa snippet này",
+      "fetchFailed": "Không thể tải snippet",
+      "updateFailed": "Không thể cập nhật snippet",
+      "deleteFailed": "Không thể xóa snippet",
+      "deleteSuccess": "Đã xóa snippet thành công"
+    }
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "notFound": "Page not found",
+    "backToHome": "Back to home"
+  },
+  "login": {
+    "title": "Login",
+    "subTitle": "Show your code. Inspire the world.",
+    "pageDescription": "Please login to your account",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot your password?",
+    "submitButton": "Login",
+    "welcomeBack": "Welcome back!",
+    "signInTitle": "Sign in to your account",
+    "dontHaveAccount": "Don't have an account?",
+    "signUp": "Sign up",
+    "invalidCredentials": "Invalid email or password",
+    "loginSuccess": "Logged in successfully",
+    "somethingWentWrong": "Something went wrong. Please try again.",
+    "invalidEmail": "Please enter a valid email address",
+    "passwordMinLength": "Password must be at least 6 characters long",
+    "followTerms": "By continuing, you agree to our",
+    "tos": "Terms of Service",
+    "pp": "Privacy Policy"
+  },
+  "register": {
+    "title": "Register",
+    "subTitle": "Show your code. Inspire the world.",
+    "email": "Email",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "gender": "Gender",
+    "birthday": "Birthday",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "male": "Male",
+    "female": "Female",
+    "pageDescription": "Create your account",
+    "createAccount": "Create Account",
+    "signUpTitle": "Sign up to get started",
+    "name": "Name",
+    "namePlaceholder": "John Doe",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "••••••••",
+    "confirmPasswordPlaceholder": "••••••••",
+    "alreadyHaveAccount": "Already have an account?",
+    "signIn": "Sign in",
+    "nameMinLength": "Name must be at least 2 characters",
+    "invalidEmail": "Invalid email address",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "passwordsDontMatch": "Passwords don't match",
+    "registrationFailed": "Registration failed",
+    "accountCreatedSuccess": "Account created successfully! Please sign in.",
+    "somethingWentWrong": "Something went wrong",
+    "copyright": "© 2025 CodeBin. All rights reserved.",
+    "followTerms": "By continuing, you agree to our",
+    "tos": "Terms of Service",
+    "pp": "Privacy Policy"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "pageDescription": "Dashboard overview",
+    "welcomeMessage": "Welcome to your dashboard",
+    "statistics": {
+      "totalUsers": "Total Users",
+      "activeUsers": "Active Users",
+      "newBookings": "New Bookings"
+    },
+    "recentActivities": "Recent Activities"
+  },
+  "api": {
+    "snippet": {
+      "notFound": "Snippet not found",
+      "unauthorized": "Unauthorized",
+      "forbidden": "You do not have permission to access this snippet",
+      "forbiddenEdit": "You do not have permission to edit this snippet",
+      "forbiddenDelete": "You do not have permission to delete this snippet",
+      "fetchFailed": "Failed to fetch snippet",
+      "updateFailed": "Failed to update snippet",
+      "deleteFailed": "Failed to delete snippet",
+      "deleteSuccess": "Snippet deleted successfully"
+    }
+  }
+}
