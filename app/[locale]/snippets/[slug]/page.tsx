@@ -83,7 +83,7 @@ export default async function SnippetDetailPage({
     notFound();
   }
 
-  const languageColor = getLanguageColor(snippet.language);
+  const languageColor = getLanguageColor(snippet.language.name);
   const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/snippets/${snippet.slug}`;
 
   return (
@@ -155,7 +155,7 @@ export default async function SnippetDetailPage({
                 }}
                 variant="outline"
               >
-                {snippet.language}
+                {snippet.language.name}
               </Badge>
               {snippet.complexity && (
                 <Badge variant="outline" className="gap-1">
@@ -187,7 +187,7 @@ export default async function SnippetDetailPage({
             <CardContent className="p-0">
               <div className="code-block">
                 <SyntaxHighlighter
-                  language={snippet.language}
+                  language={snippet.language.name}
                   style={vscDarkPlus}
                   customStyle={{
                     margin: 0,

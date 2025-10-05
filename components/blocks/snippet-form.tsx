@@ -37,8 +37,8 @@ interface Language {
   id: string;
   name: string;
   slug: string;
-  icon?: string;
-  color?: string;
+  icon: string | null;
+  color: string | null;
 }
 
 interface SnippetFormProps {
@@ -48,7 +48,12 @@ interface SnippetFormProps {
   languages: Language[];
 }
 
-export function SnippetForm({ locale, snippet, mode, languages }: SnippetFormProps) {
+export function SnippetForm({
+  locale,
+  snippet,
+  mode,
+  languages,
+}: SnippetFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -74,7 +79,7 @@ export function SnippetForm({ locale, snippet, mode, languages }: SnippetFormPro
       title: snippet?.title || '',
       description: snippet?.description || '',
       code: snippet?.code || '',
-      languageId: snippet?.language?.id || (languages[0]?.id || ''),
+      languageId: snippet?.language?.id || languages[0]?.id || '',
       tags: selectedTags,
       isPublic: snippet?.isPublic ?? true,
       complexity: snippet?.complexity || '',
@@ -86,6 +91,7 @@ export function SnippetForm({ locale, snippet, mode, languages }: SnippetFormPro
 
   // Get current language slug for CodeEditor
   const currentLanguage = languages.find(l => l.id === watchedLanguageId);
+  const languageSlug = currentLanguage?.slug || 'javascript';
 
   useEffect(() => {
     setValue('tags', selectedTags);
@@ -116,7 +122,7 @@ export function SnippetForm({ locale, snippet, mode, languages }: SnippetFormPro
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           code: watchedCode,
-          language: currentLanguage?.slug || 'javascript',
+          language: languageSlug,
         }),
       });
 
