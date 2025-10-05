@@ -19,7 +19,10 @@ async function getSnippets(searchParams: {
     if (searchParams.tag) params.set('tag', searchParams.tag);
     if (searchParams.search) params.set('search', searchParams.search);
 
-    console.log("Log ra URL: ", `${process.env.NEXT_PUBLIC_APP_URL}/api/snippets?${params.toString()}`)
+    console.log(
+      'Log ra URL: ',
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/snippets?${params.toString()}`,
+    );
 
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/snippets?${params.toString()}`,

@@ -99,10 +99,12 @@ export function UserMenu({ locale }: UserMenuProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href={`/${locale}/profile`} className="cursor-pointer">
+          <div className="cursor-not-allowed">
+            {/* <Link href={`/${locale}/profile`} className="cursor-pointer"> */}
             <User className="mr-2 h-4 w-4" />
             Profile
-          </Link>
+            {/* </Link> */}
+          </div>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href={`/${locale}/my-snippets`} className="cursor-pointer">
@@ -117,10 +119,10 @@ export function UserMenu({ locale }: UserMenuProps) {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href={`/${locale}/settings`} className="cursor-pointer">
+          <div className="cursor-not-allowed">
             <Settings className="mr-2 h-4 w-4" />
             Settings
-          </Link>
+          </div>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">

@@ -6,7 +6,7 @@ import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import type { Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/common/button';
 import { Input } from '@/components/common/input';
 import { Textarea } from '@/components/common/textarea';
 import { CodeEditor } from '@/components/blocks/code-editor';
@@ -18,7 +18,7 @@ import {
   CardTitle,
 } from '@/components/common/card';
 import { toast } from 'sonner';
-import { Loader2, X, Zap } from 'lucide-react';
+import { Loader2, X, Zap, Lock } from 'lucide-react';
 import { Snippet } from '@/types';
 
 const snippetSchema = z.object({
@@ -26,7 +26,8 @@ const snippetSchema = z.object({
   description: z.string().optional(),
   code: z.string().min(1, 'Code is required'),
   languageId: z.string().min(1, 'Language is required'),
-  tags: z.array(z.string()).max(5, 'Maximum 5 tags allowed'),
+  languageTag: z.string(), // Tag ngôn ngữ (không thể xóa)
+  topicTags: z.array(z.string()).max(5, 'Maximum 5 topic tags allowed'),
   isPublic: z.boolean().default(true),
   complexity: z.string().optional(),
 });
@@ -58,7 +59,9 @@ export function SnippetForm({
   const [isLoading, setIsLoading] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [tagInput, setTagInput] = useState('');
-  const [selectedTags, setSelectedTags] = useState<string[]>(
+
+  // Tách riêng topic tags (loại TOPIC)
+  const [topicTags, setTopicTags] = useState<string[]>(
     snippet?.tags.filter(t => t.tag.type === 'TOPIC').map(t => t.tag.name) ||
       [],
   );
@@ -69,7 +72,7 @@ export function SnippetForm({
     control,
     watch,
     setValue,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<SnippetFormData>({
     resolver: zodResolver(snippetSchema) as unknown as Resolver<
       SnippetFormData,
@@ -80,7 +83,8 @@ export function SnippetForm({
       description: snippet?.description || '',
       code: snippet?.code || '',
       languageId: snippet?.language?.id || languages[0]?.id || '',
-      tags: selectedTags,
+      languageTag: snippet?.language?.name || languages[0]?.name || '',
+      topicTags: topicTags,
       isPublic: snippet?.isPublic ?? true,
       complexity: snippet?.complexity || '',
     },
@@ -89,24 +93,71 @@ export function SnippetForm({
   const watchedCode = watch('code');
   const watchedLanguageId = watch('languageId');
 
-  // Get current language slug for CodeEditor
   const currentLanguage = languages.find(l => l.id === watchedLanguageId);
   const languageSlug = currentLanguage?.slug || 'javascript';
 
+  // Tự động cập nhật language tag khi đổi ngôn ngữ
   useEffect(() => {
-    setValue('tags', selectedTags);
-  }, [selectedTags, setValue]);
+    if (currentLanguage) {
+      setValue('languageTag', currentLanguage.name);
+    }
+  }, [currentLanguage, setValue]);
+
+  useEffect(() => {
+    if (!isDirty || isLoading) return;
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    const handleClick = (e: MouseEvent) => {
+      const link = (e.target as HTMLElement).closest('a');
+      if (link && link.href && !link.target) {
+        const isSameOrigin = link.href.startsWith(window.location.origin);
+        if (isSameOrigin && link.href !== window.location.href) {
+          const confirmed = window.confirm(
+            'You have unsaved changes. Are you sure you want to leave?',
+          );
+          if (!confirmed) e.preventDefault();
+        }
+      }
+    };
+    document.addEventListener('click', handleClick);
+
+    const handlePopState = (e: PopStateEvent) => {
+      const confirmed = window.confirm(
+        'You have unsaved changes. Are you sure you want to leave?',
+      );
+      if (!confirmed) {
+        e.preventDefault();
+        router.push(window.location.pathname);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      document.removeEventListener('click', handleClick);
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [isDirty, isLoading, router]);
+
+  useEffect(() => {
+    setValue('topicTags', topicTags);
+  }, [topicTags, setValue]);
 
   const handleAddTag = () => {
     const tag = tagInput.trim().toLowerCase();
-    if (tag && !selectedTags.includes(tag) && selectedTags.length < 5) {
-      setSelectedTags([...selectedTags, tag]);
+    if (tag && !topicTags.includes(tag) && topicTags.length < 5) {
+      setTopicTags([...topicTags, tag]);
       setTagInput('');
     }
   };
 
   const handleRemoveTag = (tagToRemove: string) => {
-    setSelectedTags(selectedTags.filter(tag => tag !== tagToRemove));
+    setTopicTags(topicTags.filter(tag => tag !== tagToRemove));
   };
 
   const handleAnalyzeComplexity = async () => {
@@ -149,10 +200,19 @@ export function SnippetForm({
 
       const method = mode === 'create' ? 'POST' : 'PUT';
 
+      // Gửi cả language tag và topic tags
+      const payload = {
+        ...data,
+        tags: {
+          languageTag: data.languageTag,
+          topicTags: data.topicTags,
+        },
+      };
+
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -180,9 +240,11 @@ export function SnippetForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-2">
-        <label htmlFor="title" className="mb-2 text-sm font-medium">
-          Title <span className="text-red-400">*</span>
-        </label>
+        <div className="mb-2">
+          <label htmlFor="title" className="text-sm font-medium">
+            Title <span className="text-red-400">*</span>
+          </label>
+        </div>
         <Input
           id="title"
           placeholder="e.g., Binary Search Implementation"
@@ -209,11 +271,6 @@ export function SnippetForm({
           disabled={isLoading}
           {...register('description')}
         />
-        {errors.description && (
-          <p className="text-sm text-[var(--color-destructive)]">
-            {errors.description.message}
-          </p>
-        )}
       </div>
 
       <div className="space-y-2">
@@ -242,6 +299,11 @@ export function SnippetForm({
       </div>
 
       <div className="space-y-2">
+        <div className="mb-2">
+          <label className="text-sm font-medium">
+            Code <span className="text-red-400">*</span>
+          </label>
+        </div>
         <Controller
           name="code"
           control={control}
@@ -249,8 +311,9 @@ export function SnippetForm({
             <CodeEditor
               value={field.value}
               onChange={field.onChange}
-              language={currentLanguage?.slug || 'javascript'}
-              placeholder="Paste your code here..."
+              language={languageSlug}
+              placeholder="// Start coding here..."
+              height="500px"
             />
           )}
         />
@@ -301,51 +364,75 @@ export function SnippetForm({
 
       <div className="space-y-2">
         <div className="mb-2">
-          <label className="text-sm font-medium">Tags (Max 5)</label>
+          <label className="text-sm font-medium">Tags</label>
         </div>
-        <div className="flex gap-2">
-          <Input
-            placeholder="Add a tag..."
-            value={tagInput}
-            onChange={e => setTagInput(e.target.value)}
-            onKeyPress={e => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                handleAddTag();
-              }
-            }}
-            disabled={isLoading || selectedTags.length >= 5}
-          />
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleAddTag}
-            disabled={isLoading || selectedTags.length >= 5}
-          >
-            Add
-          </Button>
-        </div>
-        {selectedTags.length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-2">
-            {selectedTags.map(tag => (
-              <Badge key={tag} variant="secondary" className="gap-1">
-                {tag}
-                <button
-                  type="button"
-                  onClick={() => handleRemoveTag(tag)}
-                  className="ml-1 hover:text-[var(--color-destructive)]"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </Badge>
-            ))}
-          </div>
-        )}
-        {errors.tags && (
-          <p className="text-sm text-[var(--color-destructive)]">
-            {errors.tags.message}
+
+        {/* Language Tag (không thể xóa) */}
+        <div className="mb-3">
+          <p className="mb-2 text-xs text-[var(--color-muted-foreground)]">
+            Language Tag (auto-generated)
           </p>
-        )}
+          <Badge
+            variant="default"
+            className="gap-2"
+            style={{
+              backgroundColor: currentLanguage?.color || 'var(--color-primary)',
+            }}
+          >
+            <Lock className="h-3 w-3" />
+            {currentLanguage?.name || 'Unknown'}
+          </Badge>
+        </div>
+
+        {/* Topic Tags (có thể thêm/xóa, tối đa 5) */}
+        <div>
+          <p className="mb-2 text-xs text-[var(--color-muted-foreground)]">
+            Topic Tags (Max 5)
+          </p>
+          <div className="flex gap-2">
+            <Input
+              placeholder="Add a topic tag..."
+              value={tagInput}
+              onChange={e => setTagInput(e.target.value)}
+              onKeyPress={e => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleAddTag();
+                }
+              }}
+              disabled={isLoading || topicTags.length >= 5}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleAddTag}
+              disabled={isLoading || topicTags.length >= 5}
+            >
+              Add
+            </Button>
+          </div>
+          {topicTags.length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-2">
+              {topicTags.map(tag => (
+                <Badge key={tag} variant="secondary" className="gap-1">
+                  {tag}
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveTag(tag)}
+                    className="ml-1 hover:text-[var(--color-destructive)]"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              ))}
+            </div>
+          )}
+          {errors.topicTags && (
+            <p className="text-sm text-[var(--color-destructive)]">
+              {errors.topicTags.message}
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="flex items-center gap-2">
@@ -365,7 +452,11 @@ export function SnippetForm({
       </div>
 
       <div className="flex gap-3 pt-4">
-        <Button type="submit" disabled={isLoading} className="flex-1">
+        <Button
+          type="submit"
+          disabled={isLoading || isAnalyzing}
+          className="flex-1"
+        >
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {mode === 'create' ? 'Create Snippet' : 'Update Snippet'}
         </Button>

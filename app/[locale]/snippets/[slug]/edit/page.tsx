@@ -1,31 +1,59 @@
 import { MainLayout } from '@/components/layouts/main-layout';
-import { SnippetForm } from '@/components/blocks/snippet-form';
+import { EditSnippetBlock } from '@/components/blocks/pages/snippets/edit/render';
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/common/card';
+import { Snippet } from '@/types';
+import { redirect, notFound } from 'next/navigation';
 import { auth } from '@/lib/server/auth';
 import { prisma } from '@/lib/prisma';
-import { redirect } from 'next/navigation';
+import { Metadata } from 'next';
 
-export const metadata = {
-  title: 'Create New Snippet',
-  description: 'Share your code with the developer community',
+async function getSnippet(slug: string): Promise<Snippet | null> {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/snippets/${slug}`,
+      {
+        cache: 'no-store',
+      },
+    );
+
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (error) {
+    return null;
+  }
+}
+
+export const metadata: Metadata = {
+  title: 'Edit Snippet',
 };
 
-export default async function NewSnippetPage({
+export default async function EditSnippetPage({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }) {
-  const { locale } = await params;
+  const { locale, slug } = await params;
+
   const session = await auth();
 
   if (!session) {
-    redirect(`/${locale}/login?callbackUrl=/${locale}/snippets/new`);
+    redirect(`/${locale}/login?callbackUrl=/${locale}/snippets/${slug}/edit`);
+  }
+
+  const snippet = await getSnippet(slug);
+
+  if (!snippet) {
+    notFound();
+  }
+
+  // Check if user owns this snippet
+  if (snippet.userId !== session.user.id) {
+    redirect(`/${locale}/snippets/${slug}`);
   }
 
   const languages = await prisma.language.findMany({
@@ -62,26 +90,11 @@ export default async function NewSnippetPage({
 
   return (
     <MainLayout locale={locale}>
-      <div className="container mx-auto px-4 py-8">
-        <div className="mx-auto">
-          <Card>
-            <CardHeader>
-              <CardTitle>Create New Snippet</CardTitle>
-              <CardDescription>
-                Share your code with the developer community. Add tags and get
-                automatic complexity analysis.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <SnippetForm
-                locale={locale}
-                mode="create"
-                languages={languages}
-              />
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <EditSnippetBlock
+        snippet={snippet}
+        languages={languages}
+        locale={locale}
+      />
     </MainLayout>
   );
 }

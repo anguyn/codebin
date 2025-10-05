@@ -85,6 +85,19 @@
       "updateFailed": "Failed to update snippet",
       "deleteFailed": "Failed to delete snippet",
       "deleteSuccess": "Snippet deleted successfully"
+    },
+    "analyzeComplexity": {
+      "noCodeProvided": "No code provided",
+      "failedToAnalyze": "Failed to analyze complexity",
+      "o1": "Constant time - operations execute in the same amount of time regardless of input size",
+      "oLogN": "Logarithmic time - typically involves dividing the problem in half each time (like binary search)",
+      "oN": "Linear time - execution time grows linearly with input size (single loop)",
+      "oNLogN": "Linearithmic time - common in efficient sorting algorithms (merge sort, quick sort)",
+      "oN2": "Quadratic time - typically involves nested loops",
+      "oN3": "Cubic time - typically involves triple nested loops",
+      "o2N": "Exponential time - execution time doubles with each addition to input (recursive algorithms)",
+      "unknownComplexity": "Unable to determine complexity",
+      "note": "This is a basic estimation. For accurate analysis, consider the specific algorithm and data structures used."
     }
   }
 }

@@ -96,38 +96,34 @@ export async function PUT(
   context: { params: Promise<{ id: string }> },
 ) {
   const params = await context.params;
-  const { translate } = await getTranslate();
-  const dictionaries = {
-    en: (await import('@/translations/dictionaries/en.json')).default,
-    vi: (await import('@/translations/dictionaries/vi.json')).default,
-  };
-  const t = (await translate(dictionaries)).api.snippet;
 
   try {
     const session = await auth();
 
     if (!session?.user) {
-      return NextResponse.json({ error: t.unauthorized }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const snippet = await prisma.snippet.findUnique({
       where: { id: params.id },
+      include: { language: true },
     });
 
     if (!snippet) {
-      return NextResponse.json({ error: t.notFound }, { status: 404 });
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
 
-    if (!isSnippetOwner(snippet, session)) {
-      return NextResponse.json({ error: t.forbiddenEdit }, { status: 403 });
+    if (snippet.userId !== session.user.id) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
     const body = await request.json();
     const { title, description, code, languageId, tags, isPublic, complexity } =
       body;
 
-    // Validate languageId exists
-    if (languageId) {
+    // Validate language exists
+    let language = snippet.language;
+    if (languageId && languageId !== snippet.languageId) {
       const languageExists = await prisma.language.findUnique({
         where: { id: languageId },
       });
@@ -137,8 +133,10 @@ export async function PUT(
           { status: 400 },
         );
       }
+      language = languageExists;
     }
 
+    // Generate unique slug if title changed
     let slug = snippet.slug;
     if (title && title !== snippet.title) {
       slug = await generateUniqueSlug(title, params.id);
@@ -149,8 +147,12 @@ export async function PUT(
       where: { snippetId: params.id },
     });
 
-    // Create tag connections
-    const tagConnections = await createTagConnections(tags || []);
+    // Create new tag connections với language tag
+    const topicTags = tags?.topicTags || [];
+    const tagConnections = await createTagConnections(
+      topicTags,
+      tags?.languageTag || language.name,
+    );
 
     const updatedSnippet = await prisma.snippet.update({
       where: { id: params.id },
@@ -195,7 +197,7 @@ export async function PUT(
     return NextResponse.json(updatedSnippet);
   } catch (error) {
     console.error('Update snippet error:', error);
-    return NextResponse.json({ error: t.updateFailed }, { status: 500 });
+    return NextResponse.json({ error: 'Update failed' }, { status: 500 });
   }
 }
 

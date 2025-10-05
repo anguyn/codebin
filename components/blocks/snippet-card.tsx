@@ -20,7 +20,7 @@ interface SnippetCardProps {
 }
 
 export function SnippetCard({ snippet, locale }: SnippetCardProps) {
-  const languageColor = getLanguageColor(snippet.language.name);
+  const languageColor = getLanguageColor(snippet.language?.name || 'other');
 
   return (
     <Card className="overflow-hidden transition-shadow hover:shadow-lg">
@@ -48,7 +48,7 @@ export function SnippetCard({ snippet, locale }: SnippetCardProps) {
       <CardContent className="pb-3">
         <div className="code-block">
           <SyntaxHighlighter
-            language={snippet.language.name}
+            language={snippet.language?.name || 'other'}
             style={vscDarkPlus}
             customStyle={{
               margin: 0,
@@ -71,7 +71,7 @@ export function SnippetCard({ snippet, locale }: SnippetCardProps) {
             }}
             variant="outline"
           >
-            {snippet.language.name}
+            {snippet.language?.name || 'Other'}
           </Badge>
           {snippet.tags.slice(0, 3).map(
             ({ tag }) =>

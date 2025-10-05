@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
+import { getTranslate } from '@/i18n/server';
 
-// Simple pattern matching for common complexity patterns
 function analyzeComplexity(code: string): string {
   code = code.toLowerCase();
 
@@ -75,42 +75,41 @@ function analyzeComplexity(code: string): string {
 }
 
 export async function POST(request: Request) {
+  const { translate } = await getTranslate();
+  const dictionaries = {
+    en: (await import('@/translations/dictionaries/en.json')).default,
+    vi: (await import('@/translations/dictionaries/vi.json')).default,
+  };
+  const t = (await translate(dictionaries)).api.analyzeComplexity;
+
   try {
     const { code, language } = await request.json();
 
     if (!code) {
-      return NextResponse.json({ error: 'No code provided' }, { status: 400 });
+      return NextResponse.json({ error: t.noCodeProvided }, { status: 400 });
     }
 
     const complexity = analyzeComplexity(code);
 
     // Provide explanation
     const explanations: { [key: string]: string } = {
-      'O(1)':
-        'Constant time - operations execute in the same amount of time regardless of input size',
-      'O(log n)':
-        'Logarithmic time - typically involves dividing the problem in half each time (like binary search)',
-      'O(n)':
-        'Linear time - execution time grows linearly with input size (single loop)',
-      'O(n log n)':
-        'Linearithmic time - common in efficient sorting algorithms (merge sort, quick sort)',
-      'O(n²)': 'Quadratic time - typically involves nested loops',
-      'O(n³)': 'Cubic time - typically involves triple nested loops',
-      'O(2^n)':
-        'Exponential time - execution time doubles with each addition to input (recursive algorithms)',
+      'O(1)': t.o1,
+      'O(log n)': t.oLogN,
+      'O(n)': t.oN,
+      'O(n log n)': t.oNLogN,
+      'O(n²)': t.oN2,
+      'O(n³)': t.oN3,
+      'O(2^n)': t.o2N,
     };
 
     return NextResponse.json({
       complexity,
-      explanation: explanations[complexity] || 'Unable to determine complexity',
+      explanation: explanations[complexity] || t.unknownComplexity,
       confidence: complexity === 'O(1)' ? 'low' : 'medium',
-      note: 'This is a basic estimation. For accurate analysis, consider the specific algorithm and data structures used.',
+      note: t.note,
     });
   } catch (error) {
     console.error('Analyze complexity error:', error);
-    return NextResponse.json(
-      { error: 'Failed to analyze complexity' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: t.failedToAnalyze }, { status: 500 });
   }
 }

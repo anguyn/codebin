@@ -40,7 +40,7 @@ export async function GET() {
     console.error('Get user error:', error);
     return NextResponse.json(
       { error: 'Failed to fetch user' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -62,7 +62,7 @@ export async function PUT(request: Request) {
       if (!currentPassword) {
         return NextResponse.json(
           { error: 'Current password is required' },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -76,13 +76,13 @@ export async function PUT(request: Request) {
 
       const isValidPassword = await bcrypt.compare(
         currentPassword,
-        user.password
+        user.password,
       );
 
       if (!isValidPassword) {
         return NextResponse.json(
           { error: 'Current password is incorrect' },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -122,7 +122,7 @@ export async function PUT(request: Request) {
       if (existingUser) {
         return NextResponse.json(
           { error: 'Username already taken' },
-          { status: 400 }
+          { status: 400 },
         );
       }
     }
@@ -150,7 +150,7 @@ export async function PUT(request: Request) {
     console.error('Update user error:', error);
     return NextResponse.json(
       { error: 'Failed to update user' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -170,7 +170,7 @@ export async function DELETE(request: Request) {
     if (!password) {
       return NextResponse.json(
         { error: 'Password is required' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -187,7 +187,7 @@ export async function DELETE(request: Request) {
     if (!isValidPassword) {
       return NextResponse.json(
         { error: 'Password is incorrect' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -201,7 +201,7 @@ export async function DELETE(request: Request) {
     console.error('Delete user error:', error);
     return NextResponse.json(
       { error: 'Failed to delete user' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

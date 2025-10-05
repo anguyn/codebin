@@ -14,6 +14,7 @@ import { i18n, LocaleProps } from '@/i18n/config';
 import { useEffect, useState } from 'react';
 import { useLocale } from '@/lib/hooks/use-locale';
 import { useTranslations } from 'next-intl';
+import { cn } from '@/lib/utils';
 
 const localeLabels = {
   en: { label: 'English', flag: '🇺🇸' },
@@ -110,9 +111,9 @@ export function LocaleSelector() {
   );
 }
 
-export function ThemeLocaleControls() {
+export function ThemeLocaleControls({ className }: { className?: string }) {
   return (
-    <div className="flex items-center gap-3">
+    <div className={cn('flex items-center gap-3', className)}>
       <LocaleSelector />
       <ThemeToggle />
     </div>

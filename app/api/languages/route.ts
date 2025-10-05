@@ -20,7 +20,7 @@ export async function GET(request: Request) {
           select: {
             snippets: {
               where: {
-                isPublic: true,
+                // isPublic: true,
               },
             },
           },

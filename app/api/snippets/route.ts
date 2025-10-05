@@ -112,8 +112,15 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { title, description, code, languageId, tags, isPublic, complexity } =
-      body;
+    const {
+      title,
+      description,
+      code,
+      languageId,
+      tags, // { languageTag, topicTags }
+      isPublic,
+      complexity,
+    } = body;
 
     if (!title || !code || !languageId) {
       return NextResponse.json(
@@ -144,8 +151,38 @@ export async function POST(request: Request) {
 
     // Process tags
     const tagConnections = [];
-    if (tags && Array.isArray(tags)) {
-      for (const tagName of tags) {
+
+    // 1. Tạo/lấy language tag (type: LANGUAGE)
+    if (tags?.languageTag) {
+      const langTagSlug = slugify(tags.languageTag, {
+        lower: true,
+        strict: true,
+      });
+
+      let languageTag = await prisma.tag.findUnique({
+        where: { slug: langTagSlug },
+      });
+
+      if (!languageTag) {
+        languageTag = await prisma.tag.create({
+          data: {
+            name: tags.languageTag,
+            slug: langTagSlug,
+            type: 'LANGUAGE',
+          },
+        });
+      }
+
+      tagConnections.push({
+        tag: {
+          connect: { id: languageTag.id },
+        },
+      });
+    }
+
+    // 2. Tạo/lấy topic tags (type: TOPIC)
+    if (tags?.topicTags && Array.isArray(tags.topicTags)) {
+      for (const tagName of tags.topicTags) {
         const tagSlug = slugify(tagName, { lower: true, strict: true });
 
         let tag = await prisma.tag.findUnique({

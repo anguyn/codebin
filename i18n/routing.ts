@@ -77,6 +77,19 @@ export interface DictionaryStructure {
       updateFailed: string;
       deleteFailed: string;
     };
+    analyzeComplexity: {
+      noCodeProvided: string;
+      failedToAnalyze: string;
+      o1: string;
+      oLogN: string;
+      oN: string;
+      oNLogN: string;
+      oN2: string;
+      oN3: string;
+      o2N: string;
+      unknownComplexity: string;
+      note: string;
+    };
   };
 }
 

@@ -85,6 +85,19 @@
       "updateFailed": "Không thể cập nhật snippet",
       "deleteFailed": "Không thể xóa snippet",
       "deleteSuccess": "Đã xóa snippet thành công"
+    },
+    "analyzeComplexity": {
+      "noCodeProvided": "Không có mã được cung cấp",
+      "failedToAnalyze": "Không thể phân tích độ phức tạp",
+      "o1": "Thời gian hằng số - các hoạt động thực thi trong cùng một lượng thời gian bất kể kích thước đầu vào",
+      "oLogN": "Thời gian logarit - thường liên quan đến việc chia vấn đề làm đôi mỗi lần (như tìm kiếm nhị phân)",
+      "oN": "Thời gian tuyến tính - thời gian thực thi tăng tuyến tính với kích thước đầu vào (vòng lặp đơn)",
+      "oNLogN": "Thời gian tuyến tính logarit - phổ biến trong các thuật toán sắp xếp hiệu quả (merge sort, quick sort)",
+      "oN2": "Thời gian bậc hai - thường liên quan đến vòng lặp lồng nhau",
+      "oN3": "Thời gian bậc ba - thường liên quan đến ba vòng lặp lồng nhau",
+      "o2N": "Thời gian mũ - thời gian thực thi tăng gấp đôi với mỗi lần thêm vào đầu vào (thuật toán đệ quy)",
+      "unknownComplexity": "Không thể xác định độ phức tạp",
+      "note": "Đây là ước tính cơ bản. Để phân tích chính xác, hãy xem xét thuật toán cụ thể và cấu trúc dữ liệu được sử dụng."
     }
   }
 }

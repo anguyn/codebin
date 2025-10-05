@@ -8,12 +8,15 @@ import { Input } from '@/components/common/input';
 import { UserMenu } from './user-menu';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { ThemeLocaleControls } from '@/components/common/theme-locale-control';
+import { useRouter } from 'next/navigation';
 
 interface HeaderProps {
   locale: string;
 }
 
 export function Header({ locale }: HeaderProps) {
+  const router = useRouter();
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -22,13 +25,12 @@ export function Header({ locale }: HeaderProps) {
     { name: 'Explore', href: `/${locale}` },
     { name: 'Snippets', href: `/${locale}/snippets` },
     { name: 'Tags', href: `/${locale}/tags` },
-    { name: 'Developers', href: `/${locale}/developers` },
   ];
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      window.location.href = `/${locale}/search?q=${encodeURIComponent(searchQuery)}`;
+      router.push(`/${locale}/search?q=${encodeURIComponent(searchQuery)}`);
     }
   };
 
@@ -37,37 +39,40 @@ export function Header({ locale }: HeaderProps) {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link
-            href={`/${locale}`}
-            className="flex items-center gap-2 font-semibold"
-          >
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--color-primary)]">
-              <Code2 className="h-5 w-5 text-[var(--color-primary-foreground)]" />
-            </div>
-            <span className="hidden text-lg sm:inline-block">CodeBin</span>
-          </Link>
+          <div className="flex gap-4">
+            <Link
+              href={`/${locale}`}
+              className="flex items-center gap-2 font-semibold"
+            >
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--color-primary)]">
+                <Code2 className="h-5 w-5 text-[var(--color-primary-foreground)]" />
+              </div>
+              <span className="hidden text-lg sm:inline-block">CodeBin</span>
+            </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-6 md:flex">
-            {navigation.map(item => {
-              const isActive =
-                pathname === item.href || pathname.startsWith(item.href + '/');
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={cn(
-                    'text-sm font-medium transition-colors hover:text-[var(--color-primary)]',
-                    isActive
-                      ? 'text-[var(--color-foreground)]'
-                      : 'text-[var(--color-muted-foreground)]',
-                  )}
-                >
-                  {item.name}
-                </Link>
-              );
-            })}
-          </nav>
+            {/* Desktop Navigation */}
+            <nav className="hidden items-center gap-6 md:flex">
+              {navigation.map(item => {
+                const isActive =
+                  pathname === item.href ||
+                  pathname.startsWith(item.href + '/');
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={cn(
+                      'text-sm font-medium transition-colors hover:text-[var(--color-primary)]',
+                      isActive
+                        ? 'text-[var(--color-foreground)]'
+                        : 'text-[var(--color-muted-foreground)]',
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
 
           {/* Search Bar - Desktop */}
           <div className="mx-4 hidden max-w-md flex-1 lg:flex">
@@ -92,6 +97,8 @@ export function Header({ locale }: HeaderProps) {
                 Create
               </Link>
             </Button>
+
+            <ThemeLocaleControls className="hidden md:flex" />
 
             {/* User Menu */}
             <UserMenu locale={locale} />

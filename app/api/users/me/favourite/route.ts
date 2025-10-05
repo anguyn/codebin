@@ -58,7 +58,7 @@ export async function GET(request: Request) {
     ]);
 
     return NextResponse.json({
-      favorites: favorites.map((f) => f.snippet),
+      favorites: favorites.map(f => f.snippet),
       pagination: {
         page,
         limit,
@@ -70,7 +70,7 @@ export async function GET(request: Request) {
     console.error('Get favorites error:', error);
     return NextResponse.json(
       { error: 'Failed to fetch favorites' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

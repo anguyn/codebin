@@ -17,6 +17,7 @@ import { getStaticParams, setStaticParamsLocale } from '@/i18n/server';
 import { NextIntlClientProvider } from 'next-intl';
 import '@/styles/globals.css';
 import { getServerLocale } from '@/lib/server/utils';
+import { NavigationProgress } from '@/components/common/navigation-progress';
 
 interface LocaleLayoutProps extends PropsWithChildren {
   params: Promise<{ locale: string }>;
@@ -107,6 +108,7 @@ const LocaleLayout = async (props: LocaleLayoutProps) => {
           typographyVariants({ variant: 'body' }),
         )}
       >
+        <NavigationProgress />
         <NextIntlClientProvider messages={messages}>
           <Providers locale={serverLocale}>{props.children}</Providers>
         </NextIntlClientProvider>

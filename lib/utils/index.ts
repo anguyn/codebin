@@ -13,7 +13,7 @@ export function formatDate(date: Date | string): string {
   }).format(d);
 }
 
-export function getLanguageColor(language: string): string {
+export function getLanguageColor(language: string = 'other'): string {
   const colors: { [key: string]: string } = {
     javascript: '#f7df1e',
     typescript: '#3178c6',
@@ -31,6 +31,7 @@ export function getLanguageColor(language: string): string {
     html: '#e34c26',
     css: '#563d7c',
     sql: '#00758f',
+    other: 'f33c26',
   };
 
   return colors[language.toLowerCase()] || '#6b7280';
@@ -49,4 +50,25 @@ export async function copyToClipboard(text: string): Promise<boolean> {
     console.error('Failed to copy:', error);
     return false;
   }
+}
+
+export async function serverFetch(
+  url: string,
+  cookieHeader: string,
+  options: RequestInit = {},
+): Promise<Response> {
+  return fetch(url, {
+    ...options,
+    headers: {
+      ...options.headers,
+      Cookie: cookieHeader,
+    },
+  });
+}
+
+// Helper để format cookies thành string
+export function formatCookies(
+  cookies: Array<{ name: string; value: string }>,
+): string {
+  return cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
 }

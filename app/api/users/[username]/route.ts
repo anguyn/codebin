@@ -25,10 +25,7 @@ export async function GET(
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     return NextResponse.json(user);
@@ -36,7 +33,7 @@ export async function GET(
     console.error('Get user error:', error);
     return NextResponse.json(
       { error: 'Failed to fetch user' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
