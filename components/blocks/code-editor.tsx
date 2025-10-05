@@ -25,7 +25,9 @@ export function CodeEditor({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium">Code</label>
+        <div className="mb-2">
+          <label className="text-sm font-medium">Code</label>
+        </div>
         <Button
           type="button"
           variant="outline"

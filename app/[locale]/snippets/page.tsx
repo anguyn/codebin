@@ -51,15 +51,18 @@ export default async function SnippetsPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: {
+  searchParams: Promise<{
     page?: string;
     language?: string;
     tag?: string;
     search?: string;
-  };
+  }>;
 }) {
+  // Await both params and searchParams
   const { locale } = await params;
-  const { snippets, pagination } = await getSnippets(searchParams);
+  const resolvedSearchParams = await searchParams;
+
+  const { snippets, pagination } = await getSnippets(resolvedSearchParams);
   const currentPage = pagination.page;
 
   return (
@@ -75,7 +78,9 @@ export default async function SnippetsPage({
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
               <div>
                 <h1 className="text-3xl font-bold">
-                  {searchParams.search ? 'Search Results' : 'All Snippets'}
+                  {resolvedSearchParams.search
+                    ? 'Search Results'
+                    : 'All Snippets'}
                 </h1>
                 <p className="mt-1 text-[var(--color-muted-foreground)]">
                   {pagination.total} snippet{pagination.total !== 1 ? 's' : ''}{' '}
@@ -94,29 +99,29 @@ export default async function SnippetsPage({
             </div>
 
             {/* Active Filters */}
-            {(searchParams.language ||
-              searchParams.tag ||
-              searchParams.search) && (
+            {(resolvedSearchParams.language ||
+              resolvedSearchParams.tag ||
+              resolvedSearchParams.search) && (
               <div className="flex flex-wrap gap-2">
-                {searchParams.language && (
+                {resolvedSearchParams.language && (
                   <div className="flex items-center gap-2 rounded-full bg-[var(--color-secondary)] px-3 py-1 text-sm">
-                    Language: {searchParams.language}
+                    Language: {resolvedSearchParams.language}
                     <button className="hover:text-[var(--color-destructive)]">
                       ×
                     </button>
                   </div>
                 )}
-                {searchParams.tag && (
+                {resolvedSearchParams.tag && (
                   <div className="flex items-center gap-2 rounded-full bg-[var(--color-secondary)] px-3 py-1 text-sm">
-                    Tag: {searchParams.tag}
+                    Tag: {resolvedSearchParams.tag}
                     <button className="hover:text-[var(--color-destructive)]">
                       ×
                     </button>
                   </div>
                 )}
-                {searchParams.search && (
+                {resolvedSearchParams.search && (
                   <div className="flex items-center gap-2 rounded-full bg-[var(--color-secondary)] px-3 py-1 text-sm">
-                    Search: {searchParams.search}
+                    Search: {resolvedSearchParams.search}
                     <button className="hover:text-[var(--color-destructive)]">
                       ×
                     </button>

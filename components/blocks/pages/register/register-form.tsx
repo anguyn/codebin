@@ -11,15 +11,17 @@ import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
-const registerSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ['confirmPassword'],
-});
+const registerSchema = z
+  .object({
+    name: z.string().min(2, 'Name must be at least 2 characters'),
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(6, 'Password must be at least 6 characters'),
+    confirmPassword: z.string(),
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
@@ -96,9 +98,11 @@ export function RegisterForm({ locale, translations }: RegisterFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
-        <label htmlFor="name" className="text-sm font-medium">
-          {translations.name}
-        </label>
+        <div className="mb-2">
+          <label htmlFor="name" className="text-sm font-medium">
+            {translations.name}
+          </label>
+        </div>
         <Input
           id="name"
           type="text"
@@ -107,14 +111,16 @@ export function RegisterForm({ locale, translations }: RegisterFormProps) {
           {...register('name')}
         />
         {errors.name && (
-          <p className="text-sm text-destructive">{errors.name.message}</p>
+          <p className="text-destructive text-sm">{errors.name.message}</p>
         )}
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="email" className="text-sm font-medium">
-          {translations.email}
-        </label>
+        <div className="mb-2">
+          <label htmlFor="email" className="text-sm font-medium">
+            {translations.email}
+          </label>
+        </div>
         <Input
           id="email"
           type="email"
@@ -123,14 +129,16 @@ export function RegisterForm({ locale, translations }: RegisterFormProps) {
           {...register('email')}
         />
         {errors.email && (
-          <p className="text-sm text-destructive">{errors.email.message}</p>
+          <p className="text-destructive text-sm">{errors.email.message}</p>
         )}
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="password" className="text-sm font-medium">
-          {translations.password}
-        </label>
+        <div className="mb-2">
+          <label htmlFor="password" className="text-sm font-medium">
+            {translations.password}
+          </label>
+        </div>
         <Input
           id="password"
           type="password"
@@ -139,14 +147,16 @@ export function RegisterForm({ locale, translations }: RegisterFormProps) {
           {...register('password')}
         />
         {errors.password && (
-          <p className="text-sm text-destructive">{errors.password.message}</p>
+          <p className="text-destructive text-sm">{errors.password.message}</p>
         )}
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="confirmPassword" className="text-sm font-medium">
-          {translations.confirmPassword}
-        </label>
+        <div className="mb-2">
+          <label htmlFor="confirmPassword" className="text-sm font-medium">
+            {translations.confirmPassword}
+          </label>
+        </div>
         <Input
           id="confirmPassword"
           type="password"
@@ -155,7 +165,7 @@ export function RegisterForm({ locale, translations }: RegisterFormProps) {
           {...register('confirmPassword')}
         />
         {errors.confirmPassword && (
-          <p className="text-sm text-destructive">
+          <p className="text-destructive text-sm">
             {errors.confirmPassword.message}
           </p>
         )}
@@ -167,10 +177,12 @@ export function RegisterForm({ locale, translations }: RegisterFormProps) {
       </Button>
 
       <div className="text-center text-sm">
-        <span className="text-muted-foreground">{translations.alreadyHaveAccount} </span>
+        <span className="text-muted-foreground">
+          {translations.alreadyHaveAccount}{' '}
+        </span>
         <Link
           href={`/${locale}/login`}
-          className="text-primary hover:underline font-medium"
+          className="text-primary font-medium hover:underline"
         >
           {translations.signIn}
         </Link>

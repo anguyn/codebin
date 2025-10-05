@@ -71,10 +71,10 @@ export default async function HomePage({
         <div className="container mx-auto px-4 py-20">
           <div className="mx-auto max-w-3xl space-y-6 text-center">
             <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
-              Share Code Snippets
+              Share Code Snippets.
               <br />
               <span className="text-[var(--color-primary)]">
-                With The World
+                Inspire The World
               </span>
             </h1>
             <p className="mx-auto max-w-2xl text-xl text-[var(--color-muted-foreground)]">

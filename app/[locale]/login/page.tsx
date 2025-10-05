@@ -34,7 +34,7 @@ const LoginPage = async (props: PageProps) => {
   const params = await props.params;
   const { locale } = params;
 
-  setStaticParamsLocale(locale);                                                                             
+  setStaticParamsLocale(locale);
   const { translate } = await getTranslate();
 
   const dictionaries = {

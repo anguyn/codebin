@@ -20,21 +20,19 @@ function isSnippetOwner(
   return session?.user?.id === snippet.userId;
 }
 
-// GET - Lấy snippet theo ID hoặc slug
 export async function GET(
   request: Request,
   context: { params: Promise<{ id: string }> },
 ) {
   const params = await context.params;
+  const { translate } = await getTranslate();
+  const dictionaries = {
+    en: (await import('@/translations/dictionaries/en.json')).default,
+    vi: (await import('@/translations/dictionaries/vi.json')).default,
+  };
+  const t = (await translate(dictionaries)).api.snippet;
 
   try {
-    const { translate } = await getTranslate();
-    const dictionaries = {
-      en: (await import('@/translations/dictionaries/en.json')).default,
-      vi: (await import('@/translations/dictionaries/vi.json')).default,
-    };
-    const t = (await translate(dictionaries)).api.snippet;
-
     const session = await auth();
 
     const snippet = await prisma.snippet.findFirst({
@@ -42,6 +40,15 @@ export async function GET(
         OR: [{ id: params.id }, { slug: params.id }],
       },
       include: {
+        language: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            color: true,
+            icon: true,
+          },
+        },
         user: {
           select: {
             id: true,
@@ -80,28 +87,23 @@ export async function GET(
     return NextResponse.json(snippet);
   } catch (error) {
     console.error('Get snippet error:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch snippet' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: t.fetchFailed }, { status: 500 });
   }
 }
 
-// PUT - Cập nhật snippet
 export async function PUT(
   request: Request,
   context: { params: Promise<{ id: string }> },
 ) {
   const params = await context.params;
+  const { translate } = await getTranslate();
+  const dictionaries = {
+    en: (await import('@/translations/dictionaries/en.json')).default,
+    vi: (await import('@/translations/dictionaries/vi.json')).default,
+  };
+  const t = (await translate(dictionaries)).api.snippet;
 
   try {
-    const { translate } = await getTranslate();
-    const dictionaries = {
-      en: (await import('@/translations/dictionaries/en.json')).default,
-      vi: (await import('@/translations/dictionaries/vi.json')).default,
-    };
-    const t = (await translate(dictionaries)).api.snippet;
-
     const session = await auth();
 
     if (!session?.user) {
@@ -121,19 +123,34 @@ export async function PUT(
     }
 
     const body = await request.json();
-    const { title, description, code, language, tags, isPublic, complexity } =
+    const { title, description, code, languageId, tags, isPublic, complexity } =
       body;
+
+    // Validate languageId exists
+    if (languageId) {
+      const languageExists = await prisma.language.findUnique({
+        where: { id: languageId },
+      });
+      if (!languageExists) {
+        return NextResponse.json(
+          { error: 'Invalid language ID' },
+          { status: 400 },
+        );
+      }
+    }
 
     let slug = snippet.slug;
     if (title && title !== snippet.title) {
       slug = await generateUniqueSlug(title, params.id);
     }
 
+    // Delete existing tag connections
     await prisma.snippetOnTag.deleteMany({
       where: { snippetId: params.id },
     });
 
-    const tagConnections = await createTagConnections(tags || [], language);
+    // Create tag connections
+    const tagConnections = await createTagConnections(tags || []);
 
     const updatedSnippet = await prisma.snippet.update({
       where: { id: params.id },
@@ -141,7 +158,7 @@ export async function PUT(
         title,
         description,
         code,
-        language,
+        languageId,
         complexity,
         isPublic,
         slug,
@@ -150,6 +167,15 @@ export async function PUT(
         },
       },
       include: {
+        language: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            color: true,
+            icon: true,
+          },
+        },
         user: {
           select: {
             id: true,
@@ -169,28 +195,23 @@ export async function PUT(
     return NextResponse.json(updatedSnippet);
   } catch (error) {
     console.error('Update snippet error:', error);
-    return NextResponse.json(
-      { error: 'Failed to update snippet' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: t.updateFailed }, { status: 500 });
   }
 }
 
-// DELETE - Xóa snippet
 export async function DELETE(
   request: Request,
   context: { params: Promise<{ id: string }> },
 ) {
   const params = await context.params;
+  const { translate } = await getTranslate();
+  const dictionaries = {
+    en: (await import('@/translations/dictionaries/en.json')).default,
+    vi: (await import('@/translations/dictionaries/vi.json')).default,
+  };
+  const t = (await translate(dictionaries)).api.snippet;
 
   try {
-    const { translate } = await getTranslate();
-    const dictionaries = {
-      en: (await import('@/translations/dictionaries/en.json')).default,
-      vi: (await import('@/translations/dictionaries/vi.json')).default,
-    };
-    const t = (await translate(dictionaries)).api.snippet;
-
     const session = await auth();
 
     if (!session?.user) {
@@ -216,9 +237,6 @@ export async function DELETE(
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Delete snippet error:', error);
-    return NextResponse.json(
-      { error: 'Failed to delete snippet' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: t.deleteFailed }, { status: 500 });
   }
 }

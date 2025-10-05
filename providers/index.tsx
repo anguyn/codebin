@@ -9,7 +9,7 @@ import { Toaster as Sonner } from 'sonner';
 import { SessionProvider as NextAuthSessionProvider } from 'next-auth/react';
 
 interface ProvidersProps extends PropsWithChildren {
-  locale?: string;
+  locale?: 'en' | 'vi';
 }
 
 const Providers = ({ children, locale }: ProvidersProps) => {

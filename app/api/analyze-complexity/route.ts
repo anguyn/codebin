@@ -32,11 +32,12 @@ function analyzeComplexity(code: string): string {
   }
 
   // Check for specific patterns
-  const hasRecursion = /function\s+([a-zA-Z_$][0-9a-zA-Z_$]*)[\s\S]*?\1\s*\(/.test(code);
-const hasSorting = /\.sort\s*\(/.test(code);
-const hasBinarySearch = /binary.*search/i.test(code);
-const hasHashMap = /(map|dict|set|hash)/i.test(code);
-const hasLinearSearch = /\.find\s*\(|\.indexof\s*\(/.test(code);
+  const hasRecursion =
+    /function\s+([a-zA-Z_$][0-9a-zA-Z_$]*)[\s\S]*?\1\s*\(/.test(code);
+  const hasSorting = /\.sort\s*\(/.test(code);
+  const hasBinarySearch = /binary.*search/i.test(code);
+  const hasHashMap = /(map|dict|set|hash)/i.test(code);
+  const hasLinearSearch = /\.find\s*\(|\.indexof\s*\(/.test(code);
 
   // Determine complexity
   if (hasRecursion) {

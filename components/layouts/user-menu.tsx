@@ -1,6 +1,5 @@
 'use client';
 
-import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useCurrentUser } from '@/lib/hooks/use-current-user';
 import { Button } from '@/components/ui/button';
@@ -16,6 +15,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { User, Settings, Heart, LogOut, Code2 } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import { signOut } from '@/lib/server/auth';
 
 interface UserMenuProps {
   locale: string;

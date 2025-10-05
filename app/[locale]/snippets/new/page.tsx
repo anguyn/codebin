@@ -1,6 +1,12 @@
 import { MainLayout } from '@/components/layouts/main-layout';
 import { SnippetForm } from '@/components/blocks/snippet-form';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/common/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/common/card';
 import { auth } from '@/lib/server/auth';
 import { redirect } from 'next/navigation';
 
@@ -24,12 +30,13 @@ export default async function NewSnippetPage({
   return (
     <MainLayout locale={locale}>
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-3xl mx-auto">
+        <div className="mx-auto max-w-3xl">
           <Card>
             <CardHeader>
               <CardTitle>Create New Snippet</CardTitle>
               <CardDescription>
-                Share your code with the developer community. Add tags and get automatic complexity analysis.
+                Share your code with the developer community. Add tags and get
+                automatic complexity analysis.
               </CardDescription>
             </CardHeader>
             <CardContent>

@@ -7,7 +7,7 @@ import slugify from 'slugify';
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const language = searchParams.get('language');
+    const languageId = searchParams.get('languageId');
     const tag = searchParams.get('tag');
     const userId = searchParams.get('userId');
     const search = searchParams.get('search');
@@ -16,13 +16,13 @@ export async function GET(request: Request) {
 
     const where: any = { isPublic: true };
 
-    if (language) {
-      where.language = language;
+    if (languageId) {
+      where.languageId = languageId;
     }
 
     if (userId) {
       where.userId = userId;
-      delete where.isPublic; // Show all snippets for user's profile
+      delete where.isPublic;
     }
 
     if (tag) {
@@ -53,6 +53,15 @@ export async function GET(request: Request) {
               name: true,
               username: true,
               image: true,
+            },
+          },
+          language: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              color: true,
+              icon: true,
             },
           },
           tags: {
@@ -88,7 +97,7 @@ export async function GET(request: Request) {
     console.error('Get snippets error:', error);
     return NextResponse.json(
       { error: 'Failed to fetch snippets' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -96,20 +105,30 @@ export async function GET(request: Request) {
 // POST - Tạo snippet mới
 export async function POST(request: Request) {
   try {
-    const session = await auth(); // Sử dụng auth() thay vì getServerSession(authOptions)
+    const session = await auth();
 
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body = await request.json();
-    const { title, description, code, language, tags, isPublic, complexity } = body;
+    const { title, description, code, languageId, tags, isPublic, complexity } =
+      body;
 
-    if (!title || !code || !language) {
+    if (!title || !code || !languageId) {
       return NextResponse.json(
         { error: 'Missing required fields' },
-        { status: 400 }
+        { status: 400 },
       );
+    }
+
+    // Verify language exists
+    const language = await prisma.language.findUnique({
+      where: { id: languageId },
+    });
+
+    if (!language) {
+      return NextResponse.json({ error: 'Invalid language' }, { status: 400 });
     }
 
     // Generate unique slug
@@ -128,7 +147,7 @@ export async function POST(request: Request) {
     if (tags && Array.isArray(tags)) {
       for (const tagName of tags) {
         const tagSlug = slugify(tagName, { lower: true, strict: true });
-        
+
         let tag = await prisma.tag.findUnique({
           where: { slug: tagSlug },
         });
@@ -151,34 +170,12 @@ export async function POST(request: Request) {
       }
     }
 
-    // Add language as a tag
-    const languageSlug = slugify(language, { lower: true, strict: true });
-    let languageTag = await prisma.tag.findUnique({
-      where: { slug: languageSlug },
-    });
-
-    if (!languageTag) {
-      languageTag = await prisma.tag.create({
-        data: {
-          name: language,
-          slug: languageSlug,
-          type: 'LANGUAGE',
-        },
-      });
-    }
-
-    tagConnections.push({
-      tag: {
-        connect: { id: languageTag.id },
-      },
-    });
-
     const snippet = await prisma.snippet.create({
       data: {
         title,
         description,
         code,
-        language,
+        languageId,
         complexity,
         isPublic: isPublic !== false,
         slug,
@@ -196,6 +193,15 @@ export async function POST(request: Request) {
             image: true,
           },
         },
+        language: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            color: true,
+            icon: true,
+          },
+        },
         tags: {
           include: {
             tag: true,
@@ -209,7 +215,7 @@ export async function POST(request: Request) {
     console.error('Create snippet error:', error);
     return NextResponse.json(
       { error: 'Failed to create snippet' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

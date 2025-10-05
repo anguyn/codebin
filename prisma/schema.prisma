@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../app/generated/prisma"
@@ -20,9 +17,9 @@ model User {
   email         String    @unique
   emailVerified DateTime?
   password      String
-  image         String?   // Cloudflare R2 URL
+  image         String? // Cloudflare R2 URL
   bio           String?   @db.Text
-  username      String?   @unique  // Username cho public profile URL
+  username      String?   @unique // Username cho public profile URL
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -61,13 +58,33 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model Language {
+  id          String   @id @default(cuid())
+  name        String   @unique // "JavaScript", "Python", "Java"
+  slug        String   @unique // "javascript", "python", "java"
+  description String?  @db.Text
+  icon        String? // URL to icon/logo
+  color       String? // Hex color code for UI
+  fileExt     String[] // [".js", ".mjs", ".cjs"]
+  popularity  Int      @default(0) // Để sort theo độ phổ biến
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  snippets Snippet[]
+
+  @@index([slug])
+  @@index([popularity])
+  @@index([isActive])
+}
+
 model Snippet {
   id          String   @id @default(cuid())
   title       String
   description String?  @db.Text
   code        String   @db.Text
-  language    String   // e.g., "javascript", "python", "typescript"
-  complexity  String?  // O(n), O(n²), O(log n), etc.
+  languageId  String // Foreign key to Language
+  complexity  String? // O(n), O(n²), O(log n), etc.
   isPublic    Boolean  @default(true)
   viewCount   Int      @default(0)
   createdAt   DateTime @default(now())
@@ -76,11 +93,12 @@ model Snippet {
   slug        String   @unique
 
   user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  language  Language       @relation(fields: [languageId], references: [id], onDelete: Restrict)
   tags      SnippetOnTag[]
   favorites Favorite[]
 
   @@index([userId])
-  @@index([language])
+  @@index([languageId])
   @@index([slug])
   @@index([isPublic])
   @@index([createdAt])

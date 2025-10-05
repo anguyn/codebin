@@ -13,7 +13,13 @@ export interface Snippet {
   title: string;
   description: string | null;
   code: string;
-  language: string;
+  language: {
+    id: string;
+    name: string;
+    slug: string;
+    icon?: string;
+    color?: string;
+  };
   complexity: string | null;
   isPublic: boolean;
   viewCount: number;

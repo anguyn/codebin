@@ -87,9 +87,11 @@ export function LoginForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
-        <label htmlFor="email" className="text-sm font-medium">
-          {translations.email}
-        </label>
+        <div className="mb-2">
+          <label htmlFor="email" className="text-sm font-medium">
+            {translations.email}
+          </label>
+        </div>
         <Input
           id="email"
           type="email"
@@ -104,16 +106,16 @@ export function LoginForm({
       </div>
 
       <div className="space-y-2">
-        <div className="flex items-center justify-between">
+        <div className="mb-2 flex items-center justify-between">
           <label htmlFor="password" className="text-sm font-medium">
             {translations.password}
           </label>
-          <Link
+          {/* <Link
             href={`/${locale}/auth/forgot-password`}
             className="text-primary text-sm hover:underline"
           >
             {translations.forgotPassword}
-          </Link>
+          </Link> */}
         </div>
         <Input
           id="password"

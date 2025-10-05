@@ -25,7 +25,7 @@ const snippetSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters'),
   description: z.string().optional(),
   code: z.string().min(1, 'Code is required'),
-  language: z.string().min(1, 'Language is required'),
+  languageId: z.string().min(1, 'Language is required'),
   tags: z.array(z.string()).max(5, 'Maximum 5 tags allowed'),
   isPublic: z.boolean().default(true),
   complexity: z.string().optional(),
@@ -33,32 +33,22 @@ const snippetSchema = z.object({
 
 type SnippetFormData = z.infer<typeof snippetSchema>;
 
+interface Language {
+  id: string;
+  name: string;
+  slug: string;
+  icon?: string;
+  color?: string;
+}
+
 interface SnippetFormProps {
   locale: string;
   snippet?: Snippet;
   mode: 'create' | 'edit';
+  languages: Language[];
 }
 
-const LANGUAGES = [
-  'javascript',
-  'typescript',
-  'python',
-  'java',
-  'cpp',
-  'c',
-  'csharp',
-  'ruby',
-  'go',
-  'rust',
-  'php',
-  'swift',
-  'kotlin',
-  'html',
-  'css',
-  'sql',
-];
-
-export function SnippetForm({ locale, snippet, mode }: SnippetFormProps) {
+export function SnippetForm({ locale, snippet, mode, languages }: SnippetFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -84,7 +74,7 @@ export function SnippetForm({ locale, snippet, mode }: SnippetFormProps) {
       title: snippet?.title || '',
       description: snippet?.description || '',
       code: snippet?.code || '',
-      language: snippet?.language || 'javascript',
+      languageId: snippet?.language?.id || (languages[0]?.id || ''),
       tags: selectedTags,
       isPublic: snippet?.isPublic ?? true,
       complexity: snippet?.complexity || '',
@@ -92,7 +82,10 @@ export function SnippetForm({ locale, snippet, mode }: SnippetFormProps) {
   });
 
   const watchedCode = watch('code');
-  const watchedLanguage = watch('language');
+  const watchedLanguageId = watch('languageId');
+
+  // Get current language slug for CodeEditor
+  const currentLanguage = languages.find(l => l.id === watchedLanguageId);
 
   useEffect(() => {
     setValue('tags', selectedTags);
@@ -123,7 +116,7 @@ export function SnippetForm({ locale, snippet, mode }: SnippetFormProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           code: watchedCode,
-          language: watchedLanguage,
+          language: currentLanguage?.slug || 'javascript',
         }),
       });
 
@@ -181,8 +174,8 @@ export function SnippetForm({ locale, snippet, mode }: SnippetFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-2">
-        <label htmlFor="title" className="text-sm font-medium">
-          Title *
+        <label htmlFor="title" className="mb-2 text-sm font-medium">
+          Title <span className="text-red-400">*</span>
         </label>
         <Input
           id="title"
@@ -198,9 +191,11 @@ export function SnippetForm({ locale, snippet, mode }: SnippetFormProps) {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="description" className="text-sm font-medium">
-          Description
-        </label>
+        <div className="mb-2">
+          <label htmlFor="description" className="text-sm font-medium">
+            Description
+          </label>
+        </div>
         <Textarea
           id="description"
           placeholder="Brief description of what this code does..."
@@ -216,24 +211,26 @@ export function SnippetForm({ locale, snippet, mode }: SnippetFormProps) {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="language" className="text-sm font-medium">
-          Language *
-        </label>
+        <div className="mb-2">
+          <label htmlFor="languageId" className="text-sm font-medium">
+            Language <span className="text-red-400">*</span>
+          </label>
+        </div>
         <select
-          id="language"
+          id="languageId"
           className="flex h-10 w-full rounded-md border border-[var(--color-input)] bg-[var(--color-background)] px-3 py-2 text-sm ring-offset-[var(--color-background)] focus-visible:ring-2 focus-visible:ring-[var(--color-ring)] focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
           disabled={isLoading}
-          {...register('language')}
+          {...register('languageId')}
         >
-          {LANGUAGES.map(lang => (
-            <option key={lang} value={lang}>
-              {lang.charAt(0).toUpperCase() + lang.slice(1)}
+          {languages.map(lang => (
+            <option key={lang.id} value={lang.id}>
+              {lang.name}
             </option>
           ))}
         </select>
-        {errors.language && (
+        {errors.languageId && (
           <p className="text-sm text-[var(--color-destructive)]">
-            {errors.language.message}
+            {errors.languageId.message}
           </p>
         )}
       </div>
@@ -246,7 +243,7 @@ export function SnippetForm({ locale, snippet, mode }: SnippetFormProps) {
             <CodeEditor
               value={field.value}
               onChange={field.onChange}
-              language={watchedLanguage}
+              language={currentLanguage?.slug || 'javascript'}
               placeholder="Paste your code here..."
             />
           )}
@@ -297,7 +294,9 @@ export function SnippetForm({ locale, snippet, mode }: SnippetFormProps) {
       </Card>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium">Tags (Max 5)</label>
+        <div className="mb-2">
+          <label className="text-sm font-medium">Tags (Max 5)</label>
+        </div>
         <div className="flex gap-2">
           <Input
             placeholder="Add a tag..."

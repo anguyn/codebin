@@ -16,6 +16,27 @@ const nextConfig: NextConfig = {
             },
         ],
     },
+    webpack: (config, { isServer }) => {
+        // Áp dụng cho cả client và server
+        config.snapshot = {
+            ...config.snapshot,
+            managedPaths: [/^(.+?[\\/]node_modules[\\/])/],
+            immutablePaths: [],
+        };
+
+        config.watchOptions = {
+            ...config.watchOptions,
+            ignored: [
+                '**/node_modules/**',
+                '**/.git/**',
+                '**/.next/**',
+                '**/Application Data/**',
+                '**/AppData/**',
+            ],
+        };
+
+        return config;
+    },
 };
 
 export default withNextIntl(nextConfig);
