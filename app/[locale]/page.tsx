@@ -22,6 +22,7 @@ import Link from 'next/link';
 
 async function getRecentSnippets(): Promise<Snippet[]> {
   try {
+    console.log("Log ra URL 1: ", `${process.env.NEXT_PUBLIC_APP_URL}/api/snippets?limit=6`)
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/snippets?limit=6`,
       {
