@@ -30,45 +30,45 @@ function isValidLocale(locale: string): locale is LocaleProps {
   return i18n.locales.includes(locale as LocaleProps);
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const lang = locale || 'en'; // fallback nếu locale undefined
-  const url = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:5000';
+// export async function generateMetadata({
+//   params,
+// }: {
+//   params: Promise<{ locale: string }>;
+// }): Promise<Metadata> {
+//   const { locale } = await params;
+//   const lang = locale || 'en'; // fallback nếu locale undefined
+//   const url = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:5000';
 
-  // ✅ Lấy file JSON từ public thông qua fetch
-  let data: any = {};
-  try {
-    const res = await fetch(`${url}/meta/${lang}.json`, {
-      cache: 'force-cache',
-    });
-    data = await res.json();
-  } catch {
-    // fallback nếu file không tồn tại
-    const res = await fetch(`${url}/meta/en.json`, { cache: 'force-cache' });
-    data = await res.json();
-  }
+//   // ✅ Lấy file JSON từ public thông qua fetch
+//   let data: any = {};
+//   try {
+//     const res = await fetch(`${url}/meta/${lang}.json`, {
+//       cache: 'force-cache',
+//     });
+//     data = await res.json();
+//   } catch {
+//     // fallback nếu file không tồn tại
+//     const res = await fetch(`${url}/meta/en.json`, { cache: 'force-cache' });
+//     data = await res.json();
+//   }
 
-  return {
-    title: {
-      default: data.defaultTitle || 'CodeBin',
-      template: `%s | ${data.appName || 'CodeBin'}`,
-    },
-    description:
-      data.description || 'CodeBin — Share and manage code snippets easily.',
-    icons: {
-      icon: `${url}/favicon.ico`,
-      shortcut: `${url}/favicon.ico`,
-      apple: `${url}/favicon.ico`,
-    },
-    other: {
-      'theme-color': '#ffffff',
-    },
-  };
-}
+//   return {
+//     title: {
+//       default: data.defaultTitle || 'CodeBin',
+//       template: `%s | ${data.appName || 'CodeBin'}`,
+//     },
+//     description:
+//       data.description || 'CodeBin — Share and manage code snippets easily.',
+//     icons: {
+//       icon: `${url}/favicon.ico`,
+//       shortcut: `${url}/favicon.ico`,
+//       apple: `${url}/favicon.ico`,
+//     },
+//     other: {
+//       'theme-color': '#ffffff',
+//     },
+//   };
+// }
 
 const LocaleLayout = async (props: LocaleLayoutProps) => {
   const params = await props.params;
