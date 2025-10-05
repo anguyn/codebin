@@ -5,8 +5,9 @@ import { auth } from '@/lib/server/auth';
 // POST - Thêm favorite
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
+  const params = await context.params;
   try {
     const session = await auth();
 
@@ -45,8 +46,10 @@ export async function POST(
 // DELETE - Xóa favorite
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
+  const params = await context.params;
+
   try {
     const session = await auth();
 
