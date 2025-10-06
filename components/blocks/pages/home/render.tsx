@@ -36,7 +36,6 @@ export function HomeBlock({ locale, translations }: HomeBlockProps) {
 
   return (
     <>
-      {/* Hero Section */}
       <section className="border-b border-[var(--color-border)] bg-gradient-to-b from-[var(--color-background)] to-[var(--color-secondary)]/20">
         <div className="container mx-auto px-4 py-20">
           <div className="mx-auto max-w-7xl space-y-6 text-center">

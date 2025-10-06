@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { javascript } from '@codemirror/lang-javascript';
-import { useTheme } from 'next-themes'; // ✅ Use next-themes
+import { useTheme } from 'next-themes';
 import { useTranslations } from 'next-intl';
 
 interface CodeEditorProps {

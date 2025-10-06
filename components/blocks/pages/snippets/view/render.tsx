@@ -98,7 +98,6 @@ export function SnippetViewBlock({
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mx-auto space-y-6">
-        {/* Header */}
         <div className="space-y-4">
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
             <div className="flex-1">

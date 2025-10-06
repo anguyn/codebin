@@ -48,7 +48,6 @@ export default async function TagsPage({
     <MainLayout locale={locale}>
       <div className="container mx-auto px-4 py-8">
         <div className="mx-auto space-y-8">
-          {/* Header */}
           <div className="space-y-4">
             <h1 className="text-4xl font-bold">Browse by Tags</h1>
             <p className="text-lg text-[var(--color-muted-foreground)]">

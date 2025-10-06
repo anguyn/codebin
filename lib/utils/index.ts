@@ -66,7 +66,6 @@ export async function serverFetch(
   });
 }
 
-// Helper để format cookies thành string
 export function formatCookies(
   cookies: Array<{ name: string; value: string }>,
 ): string {

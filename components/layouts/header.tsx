@@ -109,7 +109,6 @@ export function Header({ locale, translations }: HeaderProps) {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Create Button - Desktop */}
             <div className="hidden md:flex">
               <Button asChild className="hidden gap-2 md:flex">
                 <Link href={`/${locale}/snippets/new`}>
@@ -140,7 +139,6 @@ export function Header({ locale, translations }: HeaderProps) {
 
         {isMobileMenuOpen && (
           <div className="space-y-4 border-t border-[var(--color-border)] py-4 md:hidden">
-            {/* Mobile Search */}
             <form onSubmit={handleSearch} className="relative">
               <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[var(--color-muted-foreground)]" />
               <Input

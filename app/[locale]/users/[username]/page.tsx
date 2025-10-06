@@ -103,11 +103,9 @@ export default async function UserProfilePage({
     <MainLayout locale={locale}>
       <div className="container mx-auto px-4 py-8">
         <div className="mx-auto space-y-8">
-          {/* Profile Header */}
           <Card className="pt-6">
             <CardContent className="p-6">
               <div className="flex flex-col gap-6 md:flex-row">
-                {/* Avatar */}
                 <div className="flex-shrink-0">
                   {user.image ? (
                     <img

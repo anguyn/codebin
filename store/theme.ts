@@ -32,16 +32,12 @@ const applyThemeToDOM = (resolvedTheme: 'light' | 'dark') => {
 
   const root = document.documentElement;
 
-  // Remove existing theme classes
   root.classList.remove('light', 'dark');
 
-  // Add new theme class
   root.classList.add(resolvedTheme);
 
-  // Update color-scheme for native elements
   root.style.colorScheme = resolvedTheme;
 
-  // Update meta theme-color for mobile browsers
   const metaThemeColor = document.querySelector('meta[name="theme-color"]');
   if (metaThemeColor) {
     metaThemeColor.setAttribute(
@@ -54,19 +50,16 @@ const applyThemeToDOM = (resolvedTheme: 'light' | 'dark') => {
 const setThemeCookie = (theme: ThemeMode) => {
   if (typeof document === 'undefined') return;
 
-  // Set cookie for SSR - expires in 1 year
   document.cookie = `theme=${theme}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`;
 };
 
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
-      // Initial state
       theme: 'system',
       resolvedTheme: 'light',
       isHydrated: false,
 
-      // Computed properties
       get isDark() {
         return get().resolvedTheme === 'dark';
       },
@@ -75,17 +68,13 @@ export const useThemeStore = create<ThemeState>()(
         return get().resolvedTheme === 'light';
       },
 
-      // Actions
       setTheme: (theme: ThemeMode) => {
         const resolvedTheme = resolveTheme(theme);
 
-        // Apply to DOM immediately
         applyThemeToDOM(resolvedTheme);
 
-        // Set cookie for SSR
         setThemeCookie(theme);
 
-        // Update store
         set({ theme, resolvedTheme });
       },
 
@@ -94,10 +83,8 @@ export const useThemeStore = create<ThemeState>()(
         let newTheme: ThemeMode;
 
         if (theme === 'system') {
-          // If system, toggle to opposite of current resolved theme
           newTheme = resolvedTheme === 'dark' ? 'light' : 'dark';
         } else {
-          // If manual theme, toggle between light/dark
           newTheme = theme === 'dark' ? 'light' : 'dark';
         }
 
@@ -112,7 +99,7 @@ export const useThemeStore = create<ThemeState>()(
       name: 'bus-theme',
       storage: createJSONStorage(() => localStorage),
       partialize: state => ({ theme: state.theme }),
-      skipHydration: true, // Important for SSR
+      skipHydration: true,
     },
   ),
 );

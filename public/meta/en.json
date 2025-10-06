@@ -1,5 +1,18 @@
 {
-  "appName": "CodeBin",
-  "defaultTitle": "Share and Save Your Code Snippets",
-  "description": "CodeBin helps you organize and share your code effortlessly."
+  "title": "CodeBin - Share & Discover Code Snippets",
+  "description": "CodeBin is a platform for developers to share, discover, and organize code snippets. Browse through thousands of snippets in various programming languages.",
+  "keywords": [
+    "code snippets",
+    "programming",
+    "developer tools",
+    "code sharing",
+    "javascript",
+    "python",
+    "typescript",
+    "react",
+    "code examples"
+  ],
+  "siteName": "CodeBin",
+  "author": "An Nguyen",
+  "creator": "Nguyen Van An"
 }

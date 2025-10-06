@@ -35,7 +35,7 @@ export interface CustomButtonHTMLAttributes {
   formNoValidate?: boolean | undefined;
   formTarget?: string | undefined;
   name?: string | undefined;
-  type?: 'submit' | 'reset' | 'button' | undefined | string; // string is for Anchor
+  type?: 'submit' | 'reset' | 'button' | undefined | string;
   value?: string | readonly string[] | number | undefined;
 }
 

@@ -4,12 +4,10 @@ import { LocaleProps } from '@/i18n/config';
 import { useTransition } from 'react';
 
 interface LocaleState {
-  // State
   locale: LocaleProps;
   isChanging: boolean;
   isHydrated: boolean;
 
-  // Actions
   setLocale: (locale: LocaleProps) => void;
   setChanging: (changing: boolean) => void;
   setHydrated: (hydrated: boolean) => void;
@@ -28,12 +26,10 @@ const applyLocaleToDOM = (locale: LocaleProps) => {
 export const useLocaleStore = create<LocaleState>()(
   persist(
     (set, get) => ({
-      // Initial state
       locale: 'en',
       isChanging: false,
       isHydrated: false,
 
-      // Actions
       setLocale: (locale: LocaleProps) => {
         applyLocaleToDOM(locale);
         setLocaleCookie(locale);

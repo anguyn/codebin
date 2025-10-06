@@ -36,8 +36,12 @@ export function Footer({ locale, translations }: FooterProps) {
       { name: translations.cookiePolicy, href: `#` },
     ],
     social: [
-      { name: 'GitHub', href: 'https://github.com', icon: Github },
-      { name: 'LinkedIn', href: 'https://linkedin.com', icon: Linkedin },
+      { name: 'GitHub', href: 'https://github.com/anguyn', icon: Github },
+      {
+        name: 'LinkedIn',
+        href: 'https://www.linkedin.com/in/nguyen-an-226a84149/',
+        icon: Linkedin,
+      },
     ],
   };
 
@@ -112,7 +116,6 @@ export function Footer({ locale, translations }: FooterProps) {
           </div>
         </div>
 
-        {/* Bottom Bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[var(--color-border)] pt-8 sm:flex-row">
           <p className="text-sm text-[var(--color-muted-foreground)]">
             © {currentYear} CodeBin. {translations.copyright}

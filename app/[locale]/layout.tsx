@@ -23,6 +23,15 @@ interface LocaleLayoutProps extends PropsWithChildren {
   params: Promise<{ locale: string }>;
 }
 
+interface MetaData {
+  title: string;
+  description: string;
+  keywords: string[];
+  siteName: string;
+  author: string;
+  creator: string;
+}
+
 export const generateStaticParams = () => {
   return getStaticParams();
 };
@@ -31,58 +40,130 @@ function isValidLocale(locale: string): locale is LocaleProps {
   return i18n.locales.includes(locale as LocaleProps);
 }
 
-// export async function generateMetadata({
-//   params,
-// }: {
-//   params: Promise<{ locale: string }>;
-// }): Promise<Metadata> {
-//   const { locale } = await params;
-//   const lang = locale || 'en'; // fallback nếu locale undefined
-//   const url = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:5000';
+async function getMetadata(locale: string): Promise<MetaData> {
+  try {
+    console.log(
+      'Fetching metadata for locale:',
+      `${process.env.NEXT_PUBLIC_APP_URL}/meta/${locale}.json`,
+    );
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/meta/${locale}.json`,
+      { cache: 'force-cache' },
+    );
+    if (!response.ok) throw new Error('Failed to fetch metadata');
+    return await response.json();
+  } catch (error) {
+    return {
+      title: 'CodeBin - Share & Discover Code Snippets',
+      description:
+        'Platform for developers to share and discover code snippets',
+      keywords: ['code snippets', 'programming', 'developer tools'],
+      siteName: 'CodeBin',
+      author: 'An Nguyen',
+      creator: 'Nguyen Van An',
+    };
+  }
+}
 
-//   // ✅ Lấy file JSON từ public thông qua fetch
-//   let data: any = {};
-//   try {
-//     const res = await fetch(`${url}/meta/${lang}.json`, {
-//       cache: 'force-cache',
-//     });
-//     data = await res.json();
-//   } catch {
-//     // fallback nếu file không tồn tại
-//     const res = await fetch(`${url}/meta/en.json`, { cache: 'force-cache' });
-//     data = await res.json();
-//   }
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
 
-//   return {
-//     title: {
-//       default: data.defaultTitle || 'CodeBin',
-//       template: `%s | ${data.appName || 'CodeBin'}`,
-//     },
-//     description:
-//       data.description || 'CodeBin — Share and manage code snippets easily.',
-//     icons: {
-//       icon: `${url}/favicon.ico`,
-//       shortcut: `${url}/favicon.ico`,
-//       apple: `${url}/favicon.ico`,
-//     },
-//     other: {
-//       'theme-color': '#ffffff',
-//     },
-//   };
-// }
+  if (!locale || !isValidLocale(locale)) {
+    return {
+      title: 'CodeBin',
+      description: 'Share & Discover Code Snippets',
+    };
+  }
+
+  const metaData = await getMetadata(locale);
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL!;
+
+  return {
+    metadataBase: new URL(baseUrl),
+    title: {
+      default: metaData.title,
+      template: `%s | ${metaData.siteName}`,
+    },
+    description: metaData.description,
+    keywords: metaData.keywords,
+    authors: [{ name: metaData.author }],
+    creator: metaData.creator,
+    publisher: metaData.siteName,
+    applicationName: metaData.siteName,
+    alternates: {
+      canonical: `${baseUrl}/${locale}`,
+      languages: {
+        en: `${baseUrl}/en`,
+        vi: `${baseUrl}/vi`,
+      },
+    },
+    openGraph: {
+      type: 'website',
+      locale: locale === 'vi' ? 'vi_VN' : 'en_US',
+      url: `${baseUrl}/${locale}`,
+      siteName: metaData.siteName,
+      title: metaData.title,
+      description: metaData.description,
+      images: [
+        {
+          url: '/og-image.png',
+          width: 1200,
+          height: 630,
+          alt: metaData.siteName,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: metaData.title,
+      description: metaData.description,
+      creator: '@codebin',
+      images: ['/twitter-image.png'],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
+    icons: {
+      icon: [
+        { url: '/favicon.ico', sizes: 'any' },
+        { url: '/icon-16.png', sizes: '16x16', type: 'image/png' },
+        { url: '/icon-32.png', sizes: '32x32', type: 'image/png' },
+        { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+        { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+      ],
+      apple: [
+        { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+      ],
+    },
+    manifest: '/manifest.json',
+    verification: {
+      google: 'google-code-at-google-console',
+    },
+  };
+}
 
 const LocaleLayout = async (props: LocaleLayoutProps) => {
   const params = await props.params;
   const { locale } = params;
 
-  // Validate locale với type guard
   if (!locale || !isValidLocale(locale)) {
     notFound();
   }
 
   const validLocale = locale as LocaleProps;
 
-  // Set locale for static params
   setStaticParamsLocale(validLocale);
 
   const messages = await getMessages();

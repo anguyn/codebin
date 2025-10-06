@@ -27,7 +27,6 @@ export function FavoritesBlock({
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mx-auto space-y-6">
-        {/* Header */}
         <div className="flex items-center gap-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--color-primary)]/10">
             <Heart className="h-6 w-6 text-[var(--color-primary)]" />

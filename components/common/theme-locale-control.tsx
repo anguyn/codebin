@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useTheme } from 'next-themes'; // ✅ Use next-themes
+import { useTheme } from 'next-themes';
 import { Moon, Sun, Monitor, Globe, Loader2 } from 'lucide-react';
 import { i18n, LocaleProps } from '@/i18n/config';
 import { useEffect, useState } from 'react';

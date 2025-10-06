@@ -75,26 +75,6 @@ export default async function EditSnippetPage({
     },
   });
 
-  // if (languages.length === 0) {
-  //   return (
-  //     <MainLayout locale={locale}>
-  //       <div className="container mx-auto px-4 py-8">
-  //         <div className="mx-auto">
-  //           <Card>
-  //             <CardHeader>
-  //               <CardTitle>No Languages Available</CardTitle>
-  //               <CardDescription>
-  //                 Please contact the administrator to add programming languages
-  //                 to the system.
-  //               </CardDescription>
-  //             </CardHeader>
-  //           </Card>
-  //         </div>
-  //       </div>
-  //     </MainLayout>
-  //   );
-  // }
-
   return (
     <MainLayout locale={locale}>
       <EditSnippetBlock

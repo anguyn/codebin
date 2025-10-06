@@ -10,7 +10,6 @@ import { Input } from '@/components/common/input';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
-// import { useRouterWithProgress } from '@/lib/hooks/use-router-with-progress';
 
 const registerSchema = z
   .object({

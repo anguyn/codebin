@@ -24,7 +24,6 @@ const Providers = ({ children, locale }: ProvidersProps) => {
         <div id="site-wrapper">
           {children}
           <Sonner
-            // richColors
             position="top-center"
             closeButton
             theme="light"

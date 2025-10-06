@@ -1,5 +1,18 @@
 {
-  "appName": "CodeBin",
-  "defaultTitle": "Chia sẻ và lưu trữ đoạn mã của bạn",
-  "description": "CodeBin giúp bạn tổ chức và chia sẻ code dễ dàng hơn."
+  "title": "CodeBin - Chia Sẻ & Khám Phá Đoạn Mã",
+  "description": "CodeBin là nền tảng giúp lập trình viên chia sẻ, khám phá và quản lý các đoạn mã. Duyệt qua hàng nghìn snippet với nhiều ngôn ngữ lập trình khác nhau.",
+  "keywords": [
+    "đoạn mã",
+    "lập trình",
+    "công cụ lập trình viên",
+    "chia sẻ code",
+    "javascript",
+    "python",
+    "typescript",
+    "react",
+    "ví dụ code"
+  ],
+  "siteName": "CodeBin",
+  "author": "An Nguyen",
+  "creator": "Nguyễn Văn An"
 }
