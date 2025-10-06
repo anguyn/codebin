@@ -5,6 +5,15 @@ import { Snippet } from '@/types';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { SnippetViewBlock } from '@/components/blocks/pages/snippets/view/render';
+import {
+  getTranslate,
+  setStaticParamsLocale,
+  getStaticParams,
+} from '@/i18n/server';
+import { PageProps } from '@/types/global';
+import { auth } from '@/lib/server/auth';
+
+export const generateStaticParams = getStaticParams;
 
 async function getSnippet(
   slug: string,
@@ -25,21 +34,46 @@ async function getSnippet(
   }
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
-  const { slug } = await params;
+async function checkIsFavorited(
+  snippetId: string,
+  cookieHeader: string,
+): Promise<boolean> {
+  try {
+    const res = await serverFetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/snippets/${snippetId}/favorite/check`,
+      cookieHeader,
+      { cache: 'no-store' },
+    );
+
+    if (!res.ok) return false;
+    const data = await res.json();
+    return data.isFavorited || false;
+  } catch (error) {
+    return false;
+  }
+}
+
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const { locale, slug } = await props.params;
+
+  setStaticParamsLocale(locale);
+  const { translate } = await getTranslate();
+
+  const dictionaries = {
+    en: (await import('@/translations/dictionaries/en.json')).default,
+    vi: (await import('@/translations/dictionaries/vi.json')).default,
+  };
+
+  const t = await translate(dictionaries);
 
   const cookieStore = await cookies();
   const cookieHeader = formatCookies(cookieStore.getAll());
 
-  const snippet = await getSnippet(slug, cookieHeader);
+  const snippet = await getSnippet(slug || '', cookieHeader);
 
   if (!snippet) {
     return {
-      title: 'Snippet Not Found',
+      title: t.snippets.notFound || 'Snippet Not Found',
     };
   }
 
@@ -64,6 +98,16 @@ export default async function SnippetDetailPage({
 }) {
   const { locale, slug } = await params;
 
+  const { translate } = await getTranslate();
+
+  const dictionaries = {
+    en: (await import('@/translations/dictionaries/en.json')).default,
+    vi: (await import('@/translations/dictionaries/vi.json')).default,
+  };
+
+  const t = await translate(dictionaries);
+
+  const session = await auth();
   const cookieStore = await cookies();
   const cookieHeader = formatCookies(cookieStore.getAll());
 
@@ -73,9 +117,35 @@ export default async function SnippetDetailPage({
     notFound();
   }
 
+  const isFavorited = session
+    ? await checkIsFavorited(snippet.id, cookieHeader)
+    : false;
+
+  const snippetTranslations = {
+    share: t.common.share,
+    save: t.common.save,
+    saved: t.common.saved,
+    edit: t.common.edit,
+    delete: t.common.delete,
+    views: t.common.views,
+    saves: t.common.saves,
+    code: t.common.code,
+    timeComplexity: t.snippets.timeComplexity,
+    estimatedComplexity: t.snippets.estimatedComplexity,
+    complexityDisclaimer: t.snippets.complexityDisclaimer,
+    aboutAuthor: t.snippets.aboutAuthor,
+    viewProfile: t.snippets.viewProfile,
+    loginToSave: t.snippets.loginToSave,
+  };
+
   return (
     <MainLayout locale={locale}>
-      <SnippetViewBlock snippet={snippet} locale={locale} />
+      <SnippetViewBlock
+        snippet={snippet}
+        locale={locale}
+        isFavorited={isFavorited}
+        translations={snippetTranslations}
+      />
     </MainLayout>
   );
 }

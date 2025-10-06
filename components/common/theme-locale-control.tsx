@@ -25,7 +25,6 @@ export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // Prevent hydration mismatch
   useEffect(() => setMounted(true), []);
 
   if (!mounted) {
@@ -54,7 +53,7 @@ export function ThemeToggle() {
       variant="outline"
       size="icon"
       onClick={cycleTheme}
-      className="transition-colors hover:cursor-pointer"
+      className="h-9 transition-colors hover:cursor-pointer"
       title={`Current theme: ${theme} (${resolvedTheme})`}
     >
       {getThemeIcon()}
@@ -69,7 +68,7 @@ export function LocaleSelector() {
   if (!isHydrated) {
     return (
       <Select disabled>
-        <SelectTrigger className="w-auto min-w-[120px]">
+        <SelectTrigger className="h-9 w-auto min-w-[120px]">
           <div className="flex items-center gap-2">
             <Globe className="h-4 w-4" />
             <span>{t('loading')}...</span>
@@ -85,7 +84,7 @@ export function LocaleSelector() {
       onValueChange={value => changeLocale(value as LocaleProps)}
       disabled={isChanging}
     >
-      <SelectTrigger className="w-auto min-w-[120px] hover:cursor-pointer">
+      <SelectTrigger className="h-9 w-auto min-w-[120px] hover:cursor-pointer">
         <div className="flex items-center gap-2">
           {isChanging ? (
             <Loader2 className="h-4 w-4 animate-spin" />

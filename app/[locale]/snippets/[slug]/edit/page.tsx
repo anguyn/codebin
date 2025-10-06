@@ -28,9 +28,17 @@ async function getSnippet(slug: string): Promise<Snippet | null> {
   }
 }
 
-export const metadata: Metadata = {
-  title: 'Edit Snippet',
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  return {
+    title: locale == 'en' ? 'Edit Snippet' : 'Chỉnh Sửa Đoạn Mã',
+  };
+}
 
 export default async function EditSnippetPage({
   params,
@@ -51,7 +59,6 @@ export default async function EditSnippetPage({
     notFound();
   }
 
-  // Check if user owns this snippet
   if (snippet.userId !== session.user.id) {
     redirect(`/${locale}/snippets/${slug}`);
   }
@@ -68,29 +75,30 @@ export default async function EditSnippetPage({
     },
   });
 
-  if (languages.length === 0) {
-    return (
-      <MainLayout locale={locale}>
-        <div className="container mx-auto px-4 py-8">
-          <div className="mx-auto">
-            <Card>
-              <CardHeader>
-                <CardTitle>No Languages Available</CardTitle>
-                <CardDescription>
-                  Please contact the administrator to add programming languages
-                  to the system.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
-        </div>
-      </MainLayout>
-    );
-  }
+  // if (languages.length === 0) {
+  //   return (
+  //     <MainLayout locale={locale}>
+  //       <div className="container mx-auto px-4 py-8">
+  //         <div className="mx-auto">
+  //           <Card>
+  //             <CardHeader>
+  //               <CardTitle>No Languages Available</CardTitle>
+  //               <CardDescription>
+  //                 Please contact the administrator to add programming languages
+  //                 to the system.
+  //               </CardDescription>
+  //             </CardHeader>
+  //           </Card>
+  //         </div>
+  //       </div>
+  //     </MainLayout>
+  //   );
+  // }
 
   return (
     <MainLayout locale={locale}>
       <EditSnippetBlock
+        title={locale == 'en' ? 'Edit Snippet' : 'Chỉnh Sửa Đoạn Mã'}
         snippet={snippet}
         languages={languages}
         locale={locale}

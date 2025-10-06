@@ -58,7 +58,8 @@ export function SnippetCard({ snippet, locale }: SnippetCardProps) {
             }}
             showLineNumbers
           >
-            {truncateCode(snippet.code, 300)}
+            {truncateCode(snippet.code, 100)}
+            {snippet.code.length > 100 ? '...' : ''}
           </SyntaxHighlighter>
         </div>
 

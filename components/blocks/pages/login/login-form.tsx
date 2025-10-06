@@ -89,7 +89,7 @@ export function LoginForm({
       <div className="space-y-2">
         <div className="mb-2">
           <label htmlFor="email" className="text-sm font-medium">
-            {translations.email}
+            {translations.email} <span className="text-red-400">*</span>
           </label>
         </div>
         <Input
@@ -108,14 +108,8 @@ export function LoginForm({
       <div className="space-y-2">
         <div className="mb-2 flex items-center justify-between">
           <label htmlFor="password" className="text-sm font-medium">
-            {translations.password}
+            {translations.password} <span className="text-red-400">*</span>
           </label>
-          {/* <Link
-            href={`/${locale}/auth/forgot-password`}
-            className="text-primary text-sm hover:underline"
-          >
-            {translations.forgotPassword}
-          </Link> */}
         </div>
         <Input
           id="password"

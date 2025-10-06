@@ -108,8 +108,8 @@ const LocaleLayout = async (props: LocaleLayoutProps) => {
           typographyVariants({ variant: 'body' }),
         )}
       >
-        <NavigationProgress />
         <NextIntlClientProvider messages={messages}>
+          <NavigationProgress />
           <Providers locale={serverLocale}>{props.children}</Providers>
         </NextIntlClientProvider>
       </body>

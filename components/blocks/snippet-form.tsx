@@ -19,28 +19,21 @@ import {
 } from '@/components/common/card';
 import { toast } from 'sonner';
 import { Loader2, X, Zap, Lock } from 'lucide-react';
-import { Snippet } from '@/types';
+import { Snippet, Language } from '@/types';
+import { useTranslations } from 'next-intl';
 
 const snippetSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters'),
   description: z.string().optional(),
   code: z.string().min(1, 'Code is required'),
   languageId: z.string().min(1, 'Language is required'),
-  languageTag: z.string(), // Tag ngôn ngữ (không thể xóa)
+  languageTag: z.string(),
   topicTags: z.array(z.string()).max(5, 'Maximum 5 topic tags allowed'),
   isPublic: z.boolean().default(true),
   complexity: z.string().optional(),
 });
 
 type SnippetFormData = z.infer<typeof snippetSchema>;
-
-interface Language {
-  id: string;
-  name: string;
-  slug: string;
-  icon: string | null;
-  color: string | null;
-}
 
 interface SnippetFormProps {
   locale: string;
@@ -56,11 +49,13 @@ export function SnippetForm({
   languages,
 }: SnippetFormProps) {
   const router = useRouter();
+  const t = useTranslations('snippetForm');
+
   const [isLoading, setIsLoading] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [tagInput, setTagInput] = useState('');
 
-  // Tách riêng topic tags (loại TOPIC)
   const [topicTags, setTopicTags] = useState<string[]>(
     snippet?.tags.filter(t => t.tag.type === 'TOPIC').map(t => t.tag.name) ||
       [],
@@ -96,7 +91,6 @@ export function SnippetForm({
   const currentLanguage = languages.find(l => l.id === watchedLanguageId);
   const languageSlug = currentLanguage?.slug || 'javascript';
 
-  // Tự động cập nhật language tag khi đổi ngôn ngữ
   useEffect(() => {
     if (currentLanguage) {
       setValue('languageTag', currentLanguage.name);
@@ -117,9 +111,7 @@ export function SnippetForm({
       if (link && link.href && !link.target) {
         const isSameOrigin = link.href.startsWith(window.location.origin);
         if (isSameOrigin && link.href !== window.location.href) {
-          const confirmed = window.confirm(
-            'You have unsaved changes. Are you sure you want to leave?',
-          );
+          const confirmed = window.confirm(t('confirmLeave'));
           if (!confirmed) e.preventDefault();
         }
       }
@@ -127,9 +119,7 @@ export function SnippetForm({
     document.addEventListener('click', handleClick);
 
     const handlePopState = (e: PopStateEvent) => {
-      const confirmed = window.confirm(
-        'You have unsaved changes. Are you sure you want to leave?',
-      );
+      const confirmed = window.confirm(t('confirmLeave'));
       if (!confirmed) {
         e.preventDefault();
         router.push(window.location.pathname);
@@ -162,7 +152,7 @@ export function SnippetForm({
 
   const handleAnalyzeComplexity = async () => {
     if (!watchedCode) {
-      toast.error('Please enter some code first');
+      toast.error(t('analyzeEmpty'));
       return;
     }
 
@@ -183,9 +173,9 @@ export function SnippetForm({
 
       const data = await response.json();
       setValue('complexity', data.complexity);
-      toast.success(`Complexity detected: ${data.complexity}`);
+      toast.success(t('analyzeSuccess', { complexity: data.complexity }));
     } catch (error) {
-      toast.error('Failed to analyze complexity');
+      toast.error(t('analyzeError'));
     } finally {
       setIsAnalyzing(false);
     }
@@ -200,7 +190,6 @@ export function SnippetForm({
 
       const method = mode === 'create' ? 'POST' : 'PUT';
 
-      // Gửi cả language tag và topic tags
       const payload = {
         ...data,
         tags: {
@@ -223,15 +212,14 @@ export function SnippetForm({
       const savedSnippet = await response.json();
 
       toast.success(
-        mode === 'create'
-          ? 'Snippet created successfully!'
-          : 'Snippet updated successfully!',
+        mode === 'create' ? t('saveSuccessCreate') : t('saveSuccessUpdate'),
       );
+      setIsCompleted(true);
 
       router.push(`/${locale}/snippets/${savedSnippet.slug}`);
       router.refresh();
     } catch (error: any) {
-      toast.error(error.message || 'Something went wrong');
+      toast.error(error.message || t('generalError'));
     } finally {
       setIsLoading(false);
     }
@@ -242,12 +230,12 @@ export function SnippetForm({
       <div className="space-y-2">
         <div className="mb-2">
           <label htmlFor="title" className="text-sm font-medium">
-            Title <span className="text-red-400">*</span>
+            {t('title')} <span className="text-red-400">*</span>
           </label>
         </div>
         <Input
           id="title"
-          placeholder="e.g., Binary Search Implementation"
+          placeholder={t('titlePlaceholder')}
           disabled={isLoading}
           {...register('title')}
         />
@@ -261,12 +249,12 @@ export function SnippetForm({
       <div className="space-y-2">
         <div className="mb-2">
           <label htmlFor="description" className="text-sm font-medium">
-            Description
+            {t('description')}
           </label>
         </div>
         <Textarea
           id="description"
-          placeholder="Brief description of what this code does..."
+          placeholder={t('descriptionPlaceholder')}
           rows={3}
           disabled={isLoading}
           {...register('description')}
@@ -276,7 +264,7 @@ export function SnippetForm({
       <div className="space-y-2">
         <div className="mb-2">
           <label htmlFor="languageId" className="text-sm font-medium">
-            Language <span className="text-red-400">*</span>
+            {t('language')} <span className="text-red-400">*</span>
           </label>
         </div>
         <select
@@ -301,7 +289,7 @@ export function SnippetForm({
       <div className="space-y-2">
         <div className="mb-2">
           <label className="text-sm font-medium">
-            Code <span className="text-red-400">*</span>
+            {t('code')} <span className="text-red-400">*</span>
           </label>
         </div>
         <Controller
@@ -312,7 +300,7 @@ export function SnippetForm({
               value={field.value}
               onChange={field.onChange}
               language={languageSlug}
-              placeholder="// Start coding here..."
+              placeholder={t('codePlaceholder')}
               height="500px"
             />
           )}
@@ -329,7 +317,7 @@ export function SnippetForm({
           <CardTitle className="flex items-center justify-between text-base">
             <span className="flex items-center gap-2">
               <Zap className="h-4 w-4" />
-              Time Complexity (Optional)
+              {t('complexity')}
             </span>
             <Button
               type="button"
@@ -339,7 +327,7 @@ export function SnippetForm({
               disabled={isAnalyzing || !watchedCode}
             >
               {isAnalyzing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Analyze
+              {t('analyze')}
             </Button>
           </CardTitle>
         </CardHeader>
@@ -349,28 +337,26 @@ export function SnippetForm({
             control={control}
             render={({ field }) => (
               <Input
-                placeholder="e.g., O(n), O(log n), O(n²)"
+                placeholder={t('complexityPlaceholder')}
                 {...field}
                 disabled={isLoading}
               />
             )}
           />
           <p className="mt-2 text-xs text-[var(--color-muted-foreground)]">
-            Click "Analyze" to automatically detect time complexity or enter
-            manually
+            {t('complexityHint')}
           </p>
         </CardContent>
       </Card>
 
       <div className="space-y-2">
         <div className="mb-2">
-          <label className="text-sm font-medium">Tags</label>
+          <label className="text-sm font-medium"></label>
         </div>
 
-        {/* Language Tag (không thể xóa) */}
         <div className="mb-3">
           <p className="mb-2 text-xs text-[var(--color-muted-foreground)]">
-            Language Tag (auto-generated)
+            {t('languageTag')}
           </p>
           <Badge
             variant="default"
@@ -384,14 +370,13 @@ export function SnippetForm({
           </Badge>
         </div>
 
-        {/* Topic Tags (có thể thêm/xóa, tối đa 5) */}
         <div>
           <p className="mb-2 text-xs text-[var(--color-muted-foreground)]">
-            Topic Tags (Max 5)
+            {t('topicTags')}
           </p>
           <div className="flex gap-2">
             <Input
-              placeholder="Add a topic tag..."
+              placeholder={t('topicTagPlaceholder')}
               value={tagInput}
               onChange={e => setTagInput(e.target.value)}
               onKeyPress={e => {
@@ -408,7 +393,7 @@ export function SnippetForm({
               onClick={handleAddTag}
               disabled={isLoading || topicTags.length >= 5}
             >
-              Add
+              {t('add')}
             </Button>
           </div>
           {topicTags.length > 0 && (
@@ -447,26 +432,26 @@ export function SnippetForm({
           htmlFor="isPublic"
           className="cursor-pointer text-sm font-medium"
         >
-          Make this snippet public
+          {t('public')}
         </label>
       </div>
 
       <div className="flex gap-3 pt-4">
         <Button
           type="submit"
-          disabled={isLoading || isAnalyzing}
+          disabled={isLoading || isAnalyzing || isCompleted}
           className="flex-1"
         >
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {mode === 'create' ? 'Create Snippet' : 'Update Snippet'}
+          {mode === 'create' ? t('create') : t('update')}
         </Button>
         <Button
           type="button"
           variant="outline"
           onClick={() => router.back()}
-          disabled={isLoading}
+          disabled={isLoading || isAnalyzing || isCompleted}
         >
-          Cancel
+          {t('cancel')}
         </Button>
       </div>
     </form>

@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/server/auth';
 
-// POST - Thêm favorite
 export async function POST(
   request: Request,
   context: { params: Promise<{ id: string }> },
@@ -43,7 +42,6 @@ export async function POST(
   }
 }
 
-// DELETE - Xóa favorite
 export async function DELETE(
   request: Request,
   context: { params: Promise<{ id: string }> },

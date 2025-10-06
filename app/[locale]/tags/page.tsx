@@ -41,8 +41,8 @@ export default async function TagsPage({
   const languageTags = allTags.filter(t => t.type === 'LANGUAGE');
 
   const displayTags =
-    searchParams.type === 'language' ? languageTags : topicTags;
-  const title = searchParams.type === 'language' ? 'Languages' : 'Topics';
+    searchParams?.type === 'language' ? languageTags : topicTags;
+  const title = searchParams?.type === 'language' ? 'Languages' : 'Topics';
 
   return (
     <MainLayout locale={locale}>
@@ -56,12 +56,11 @@ export default async function TagsPage({
               topics
             </p>
 
-            {/* Filter Tabs */}
             <div className="flex gap-2 border-b border-[var(--color-border)]">
               <Link
                 href={`/${locale}/tags`}
                 className={`border-b-2 px-4 py-2 transition-colors ${
-                  !searchParams.type || searchParams.type === 'topic'
+                  !searchParams?.type || searchParams?.type === 'topic'
                     ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
                     : 'border-transparent text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]'
                 }`}
@@ -71,7 +70,7 @@ export default async function TagsPage({
               <Link
                 href={`/${locale}/tags?type=language`}
                 className={`border-b-2 px-4 py-2 transition-colors ${
-                  searchParams.type === 'language'
+                  searchParams?.type === 'language'
                     ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
                     : 'border-transparent text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]'
                 }`}
@@ -81,7 +80,6 @@ export default async function TagsPage({
             </div>
           </div>
 
-          {/* Tags Grid */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {displayTags.map(tag => (
               <Link key={tag.id} href={`/${locale}/tags/${tag.slug}`}>

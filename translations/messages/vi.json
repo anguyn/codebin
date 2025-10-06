@@ -12,7 +12,26 @@
     "delete": "Xóa",
     "save": "Lưu",
     "cancel": "Hủy",
-    "loading": "Đang tải"
+    "loading": "Đang tải",
+    "signedOutSuccess": "Đăng xuất thành công",
+    "signedOutError": "Đăng xuất thất bại",
+    "mySnippets": "Đoạn mã của tôi",
+    "favorites": "Yêu thích",
+    "settings": "Cài đặt",
+    "avatarAlt": "Ảnh đại diện người dùng",
+    "popularLanguages": "Ngôn ngữ phổ biến",
+    "viewAllLanguages": "Xem tất cả ngôn ngữ →",
+    "trendingTopics": "Chủ đề thịnh hành",
+    "viewAllTopics": "Xem tất cả chủ đề →",
+    "copyLabel": "Sao chép",
+    "copySuccess": "Đã sao chép vào clipboard!",
+    "copyError": "Sao chép thất bại",
+    "copied": "Đã sao chép!",
+    "favoriteAdded": "Đã thêm vào mục yêu thích",
+    "favoriteRemoved": "Đã xóa khỏi mục yêu thích",
+    "favoriteError": "Đã xảy ra lỗi. Vui lòng thử lại.",
+    "editorEnterCode": "Nhập đoạn mã của bạn tại đây...",
+    "editorLoading": "Đang tải trình soạn thảo..."
   },
   "snippet": {
     "title": "Tiêu đề",
@@ -26,6 +45,21 @@
     "deleteSnippet": "Xóa đoạn mã",
     "publicSnippet": "Đoạn mã công khai",
     "shareUrl": "URL chia sẻ"
+  },
+  "deleteSnippet": {
+    "title": "Xóa đoạn mã",
+    "description": "Hành động này không thể hoàn tác.",
+    "confirm": "Bạn có chắc muốn xóa \"{title}\" không? Hành động này sẽ xóa vĩnh viễn đoạn mã và toàn bộ dữ liệu liên quan.",
+    "actions": {
+      "cancel": "Hủy",
+      "delete": "Xóa",
+      "deleteSnippet": "Xóa đoạn mã",
+      "deleting": "Đang xóa..."
+    },
+    "toast": {
+      "success": "Đã xóa đoạn mã thành công.",
+      "error": "Xóa đoạn mã thất bại."
+    }
   },
   "login": {
     "verificationTitle": "Xác minh bảo mật",
@@ -90,6 +124,49 @@
     "accountCreatedSuccess": "Tạo tài khoản thành công! Vui lòng đăng nhập.",
     "somethingWentWrong": "Đã có lỗi xảy ra",
     "copyright": "© 2025 CodeBin. Bảo lưu mọi quyền."
+  },
+  "snippetForm": {
+    "title": "Tiêu đề",
+    "titlePlaceholder": "VD: Cài đặt thuật toán tìm kiếm nhị phân",
+    "description": "Mô tả",
+    "descriptionPlaceholder": "Mô tả ngắn gọn chức năng của đoạn code này...",
+    "language": "Ngôn ngữ",
+    "code": "Mã nguồn",
+    "codePlaceholder": "// Bắt đầu viết code tại đây...",
+    "complexity": "Độ phức tạp thời gian (tuỳ chọn)",
+    "analyze": "Phân tích",
+    "complexityPlaceholder": "VD: O(n), O(log n), O(n²)",
+    "complexityHint": "Nhấn \"Phân tích\" để tự động phát hiện độ phức tạp hoặc nhập thủ công",
+    "tags": "Thẻ",
+    "languageTag": "Thẻ ngôn ngữ (tự động sinh)",
+    "topicTags": "Thẻ chủ đề (tối đa 5)",
+    "topicTagPlaceholder": "Thêm thẻ chủ đề...",
+    "add": "Thêm",
+    "public": "Công khai đoạn mã này",
+    "create": "Tạo Đoạn Mã",
+    "update": "Cập nhật Đoạn Mã",
+    "cancel": "Hủy",
+    "confirmLeave": "Bạn có thay đổi chưa lưu. Bạn có chắc chắn muốn rời đi?",
+    "analyzeError": "Phân tích độ phức tạp thất bại",
+    "analyzeEmpty": "Vui lòng nhập code trước",
+    "analyzeSuccess": "Phát hiện độ phức tạp: {complexity}",
+    "saveError": "Lưu đoạn mã thất bại",
+    "saveSuccessCreate": "Tạo đoạn mã thành công!",
+    "saveSuccessUpdate": "Cập nhật đoạn mã thành công!",
+    "generalError": "Đã xảy ra lỗi",
+    "validation": {
+      "titleMin": "Tiêu đề phải có ít nhất 3 ký tự",
+      "codeRequired": "Phải nhập mã nguồn",
+      "languageRequired": "Phải chọn ngôn ngữ",
+      "maxTags": "Chỉ được tối đa 5 thẻ chủ đề"
+    }
+  },
+  "notFound": {
+    "title": "404",
+    "description": "Có vẻ bạn đã lạc đường. Trang bạn tìm không tồn tại hoặc đã được di chuyển.",
+    "back": "Quay lại",
+    "home": "Về trang chủ",
+    "contact": "Nếu bạn nghĩ đây là lỗi, hãy liên hệ với chúng tôi."
   },
   "dashboard": {
     "title": "Bảng điều khiển",

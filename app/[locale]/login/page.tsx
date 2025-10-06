@@ -44,7 +44,6 @@ const LoginPage = async (props: PageProps) => {
 
   const t = await translate(dictionaries);
 
-  // Prepare translations cho LoginForm
   const loginFormTranslations = {
     signInTitle: t.login.signInTitle,
     welcomeBack: t.login.welcomeBack,

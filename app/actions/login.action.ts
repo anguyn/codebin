@@ -14,7 +14,6 @@ export async function authenticate(formData: {
   password: string;
 }) {
   try {
-    // Validate input
     const validatedFields = loginSchema.safeParse(formData);
 
     if (!validatedFields.success) {
@@ -26,7 +25,6 @@ export async function authenticate(formData: {
 
     const { email, password } = validatedFields.data;
 
-    // Attempt sign in
     const result = await signIn('credentials', {
       email,
       password,

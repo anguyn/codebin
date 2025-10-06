@@ -76,12 +76,9 @@ export default async function TagDetailPage({
     <MainLayout locale={locale}>
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col gap-8 lg:flex-row">
-          {/* Sidebar */}
           <Sidebar locale={locale} />
 
-          {/* Content */}
           <div className="flex-1 space-y-6">
-            {/* Tag Header */}
             <div className="space-y-4">
               <div className="flex items-center gap-4">
                 <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-[var(--color-primary)]/10">
@@ -106,7 +103,6 @@ export default async function TagDetailPage({
               </div>
             </div>
 
-            {/* Snippets Grid */}
             {snippets.length > 0 ? (
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {snippets.map(snippet => (

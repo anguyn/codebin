@@ -5,14 +5,7 @@ import { Card, CardContent } from '@/components/common/card';
 import { Badge } from '@/components/common/badge';
 import { User, Snippet } from '@/types';
 import { formatDate } from '@/lib/utils';
-import {
-  Calendar,
-  Code2,
-  Heart,
-  MapPin,
-  Link as LinkIcon,
-  Edit,
-} from 'lucide-react';
+import { Calendar, Code2, Edit } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { auth } from '@/lib/server/auth';
@@ -93,7 +86,6 @@ export default async function UserProfilePage({
   const publicSnippets = snippets.filter(s => s.isPublic);
   const displaySnippets = isOwner ? snippets : publicSnippets;
 
-  // Get language stats
   const languageStats = displaySnippets.reduce(
     (acc, snippet) => {
       const lang = snippet.language.name;
@@ -130,7 +122,6 @@ export default async function UserProfilePage({
                   )}
                 </div>
 
-                {/* Info */}
                 <div className="flex-1 space-y-4">
                   <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
                     <div>
@@ -167,7 +158,6 @@ export default async function UserProfilePage({
                     </div>
                   </div>
 
-                  {/* Stats */}
                   <div className="grid grid-cols-2 gap-4 pt-4 md:grid-cols-4">
                     <div className="rounded-lg bg-[var(--color-secondary)] p-3 text-center">
                       <div className="text-2xl font-bold">
@@ -213,7 +203,6 @@ export default async function UserProfilePage({
             </CardContent>
           </Card>
 
-          {/* Top Languages */}
           {topLanguages.length > 0 && (
             <Card className="pt-6">
               <CardContent className="p-6">
@@ -229,7 +218,6 @@ export default async function UserProfilePage({
             </Card>
           )}
 
-          {/* Snippets */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold">

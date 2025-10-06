@@ -18,12 +18,14 @@ interface Language {
 }
 
 interface EditSnippetBlockProps {
+  title: string;
   snippet: Snippet;
   languages: Language[];
   locale: string;
 }
 
 export function EditSnippetBlock({
+  title,
   snippet,
   languages,
   locale,
@@ -33,7 +35,7 @@ export function EditSnippetBlock({
       <div className="mx-auto">
         <Card>
           <CardHeader>
-            <CardTitle>Edit Snippet</CardTitle>
+            <CardTitle>{title || 'Edit Snippet'}</CardTitle>
           </CardHeader>
           <CardContent>
             <SnippetForm

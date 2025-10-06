@@ -9,13 +9,10 @@ export function NavigationProgress() {
   const [progress, setProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Reset và hoàn thành khi route thay đổi
   useEffect(() => {
     if (isLoading) {
-      // Chạy nhanh đến 100%
       setProgress(100);
 
-      // Sau đó ẩn đi
       const timer = setTimeout(() => {
         setIsLoading(false);
         setProgress(0);
@@ -25,7 +22,6 @@ export function NavigationProgress() {
     }
   }, [pathname, searchParams]);
 
-  // Xử lý click vào link
   useEffect(() => {
     const handleAnchorClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -35,7 +31,6 @@ export function NavigationProgress() {
         const href = anchor.getAttribute('href');
         const currentPath = window.location.pathname + window.location.search;
 
-        // Chỉ start progress nếu là internal link và khác trang hiện tại
         if (
           href &&
           href.startsWith('/') &&
@@ -44,7 +39,6 @@ export function NavigationProgress() {
         ) {
           setIsLoading(true);
           setProgress(0);
-          // Start tại 10%
           setTimeout(() => setProgress(10), 0);
         }
       }
@@ -65,7 +59,6 @@ export function NavigationProgress() {
     };
   }, []);
 
-  // Tăng progress dần dần khi đang loading
   useEffect(() => {
     if (!isLoading || progress >= 90) return;
 
@@ -73,7 +66,6 @@ export function NavigationProgress() {
       setProgress(prev => {
         if (prev >= 90) return 90;
 
-        // Tăng chậm dần khi gần 90%
         const diff = 90 - prev;
         const inc = diff * 0.1;
 
@@ -90,7 +82,7 @@ export function NavigationProgress() {
 
   return (
     <div
-      className="pointer-events-none fixed top-0 right-0 left-0 z-[9999] h-[3px]"
+      className="pointer-events-none fixed top-0 right-0 left-0 z-[9999] h-[1.5px]"
       style={{
         opacity: progress === 100 ? 0 : 1,
         transition: progress === 100 ? 'opacity 0.2s ease-out' : 'none',
@@ -110,7 +102,6 @@ export function NavigationProgress() {
             '0 0 10px rgba(59, 130, 246, 0.5), 0 0 5px rgba(168, 85, 247, 0.3)',
         }}
       >
-        {/* Glow effect */}
         <div
           className="absolute top-0 right-0 h-full w-[100px]"
           style={{

@@ -4,13 +4,11 @@ import { getTranslate } from '@/i18n/server';
 function analyzeComplexity(code: string): string {
   code = code.toLowerCase();
 
-  // Remove comments and strings to avoid false positives
   code = code.replace(/\/\*[\s\S]*?\*\//g, '');
   code = code.replace(/\/\/.*/g, '');
   code = code.replace(/"[^"]*"/g, '');
   code = code.replace(/'[^']*'/g, '');
 
-  // Count nested loops
   const forLoops = (code.match(/\bfor\s*\(/g) || []).length;
   const whileLoops = (code.match(/\bwhile\s*\(/g) || []).length;
   const forEachLoops = (code.match(/\.foreach\s*\(/g) || []).length;
@@ -18,7 +16,6 @@ function analyzeComplexity(code: string): string {
 
   const totalLoops = forLoops + whileLoops + forEachLoops + mapCalls;
 
-  // Check for nested loops by analyzing brackets
   let maxNesting = 0;
   let currentNesting = 0;
   const loopKeywords = ['for', 'while', 'foreach', 'map'];
@@ -31,7 +28,6 @@ function analyzeComplexity(code: string): string {
     }
   }
 
-  // Check for specific patterns
   const hasRecursion =
     /function\s+([a-zA-Z_$][0-9a-zA-Z_$]*)[\s\S]*?\1\s*\(/.test(code);
   const hasSorting = /\.sort\s*\(/.test(code);
@@ -39,12 +35,11 @@ function analyzeComplexity(code: string): string {
   const hasHashMap = /(map|dict|set|hash)/i.test(code);
   const hasLinearSearch = /\.find\s*\(|\.indexof\s*\(/.test(code);
 
-  // Determine complexity
   if (hasRecursion) {
     if (code.includes('divide') || code.includes('split')) {
-      return 'O(n log n)'; // Divide and conquer like merge sort
+      return 'O(n log n)';
     }
-    return 'O(2^n)'; // General recursion
+    return 'O(2^n)';
   }
 
   if (maxNesting >= 3 || totalLoops >= 3) {
@@ -68,10 +63,10 @@ function analyzeComplexity(code: string): string {
   }
 
   if (hasHashMap) {
-    return 'O(1)'; // Hash map operations
+    return 'O(1)';
   }
 
-  return 'O(1)'; // Constant time
+  return 'O(1)';
 }
 
 export async function POST(request: Request) {
@@ -91,7 +86,6 @@ export async function POST(request: Request) {
 
     const complexity = analyzeComplexity(code);
 
-    // Provide explanation
     const explanations: { [key: string]: string } = {
       'O(1)': t.o1,
       'O(log n)': t.oLogN,

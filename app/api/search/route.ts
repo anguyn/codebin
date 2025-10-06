@@ -5,7 +5,7 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q');
-    const type = searchParams.get('type') || 'all'; // all, snippets, users, tags
+    const type = searchParams.get('type') || 'all';
 
     if (!query) {
       return NextResponse.json({ error: 'Query is required' }, { status: 400 });
@@ -13,7 +13,6 @@ export async function GET(request: Request) {
 
     const results: any = {};
 
-    // Search snippets
     if (type === 'all' || type === 'snippets') {
       results.snippets = await prisma.snippet.findMany({
         where: {
@@ -51,7 +50,6 @@ export async function GET(request: Request) {
       });
     }
 
-    // Search users
     if (type === 'all' || type === 'users') {
       results.users = await prisma.user.findMany({
         where: {
@@ -77,7 +75,6 @@ export async function GET(request: Request) {
       });
     }
 
-    // Search tags
     if (type === 'all' || type === 'tags') {
       results.tags = await prisma.tag.findMany({
         where: {

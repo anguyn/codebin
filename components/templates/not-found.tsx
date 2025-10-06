@@ -1,13 +1,10 @@
 import { getTranslate } from '@/i18n/server';
 import { Link } from '@/i18n/routing';
+import NotFoundBlock from '@/components/blocks/pages/not-found/render';
 
 const NotFoundTemplate = async () => {
   const { translate } = await getTranslate();
-  return (
-    <div>
-      <div>404</div>
-    </div>
-  );
+  return <NotFoundBlock />;
 };
 
 export { NotFoundTemplate };

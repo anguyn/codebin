@@ -44,8 +44,9 @@ const RegisterPage = async (props: PageProps) => {
 
   const t = await translate(dictionaries);
 
-  // Prepare translations cho RegisterForm
   const registerFormTranslations = {
+    pageDescription: t.register.pageDescription,
+    subTitle: t.register.subTitle,
     name: t.register.name,
     namePlaceholder: t.register.namePlaceholder,
     email: t.register.email,
@@ -54,7 +55,8 @@ const RegisterPage = async (props: PageProps) => {
     passwordPlaceholder: t.register.passwordPlaceholder,
     confirmPassword: t.register.confirmPassword,
     confirmPasswordPlaceholder: t.register.confirmPasswordPlaceholder,
-    createAccount: t.register.pageDescription,
+    createAccount: t.register.createAccount,
+    signUpTitle: t.register.signUpTitle,
     alreadyHaveAccount: t.register.alreadyHaveAccount,
     signIn: t.register.signIn,
     nameMinLength: t.register.nameMinLength,
@@ -64,6 +66,9 @@ const RegisterPage = async (props: PageProps) => {
     registrationFailed: t.register.registrationFailed,
     accountCreatedSuccess: t.register.accountCreatedSuccess,
     somethingWentWrong: t.register.somethingWentWrong,
+    followTerms: t.register.followTerms,
+    tos: t.register.tos,
+    pp: t.register.pp,
   };
 
   return <RegisterRenderBlock translations={registerFormTranslations} />;

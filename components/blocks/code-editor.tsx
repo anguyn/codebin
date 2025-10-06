@@ -5,21 +5,20 @@ import CodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { javascript } from '@codemirror/lang-javascript';
 import { useTheme } from 'next-themes'; // ✅ Use next-themes
+import { useTranslations } from 'next-intl';
 
 interface CodeEditorProps {
   value: string;
   onChange: (value: string) => void;
-  language?: string; // slug from database: "javascript", "python", etc.
+  language?: string;
   placeholder?: string;
   readOnly?: boolean;
   height?: string;
 }
 
-// Simple mapping: language slug from DB -> CodeMirror extension
 const getLanguageExtension = (languageSlug: string) => {
   const slug = languageSlug.toLowerCase();
 
-  // Map common language slugs to extensions
   if (slug.includes('javascript') || slug === 'js')
     return javascript({ jsx: true });
   if (slug.includes('typescript') || slug === 'ts')
@@ -27,7 +26,6 @@ const getLanguageExtension = (languageSlug: string) => {
   if (slug === 'tsx' || slug === 'jsx')
     return javascript({ jsx: true, typescript: true });
 
-  // Default fallback
   return javascript();
 };
 
@@ -39,6 +37,7 @@ export function CodeEditor({
   readOnly = false,
   height = '400px',
 }: CodeEditorProps) {
+  const t = useTranslations('common');
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -53,7 +52,7 @@ export function CodeEditor({
         style={{ height }}
       >
         <p className="text-sm text-[var(--color-muted-foreground)]">
-          Loading editor...
+          {t('editorLoading')}
         </p>
       </div>
     );
@@ -67,7 +66,7 @@ export function CodeEditor({
         theme={resolvedTheme == 'dark' ? vscodeDark : 'light'}
         extensions={[getLanguageExtension(language)]}
         onChange={onChange}
-        placeholder={placeholder}
+        placeholder={t('editorEnterCode')}
         readOnly={readOnly}
         editable={!readOnly}
         basicSetup={{

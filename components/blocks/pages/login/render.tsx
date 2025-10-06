@@ -7,12 +7,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/common/card';
-import { Code2 } from 'lucide-react';
 import Link from 'next/link';
 import { LoginForm } from './login-form';
 import { useLocale } from '@/lib/hooks/use-locale';
 import { ThemeLocaleControls } from '@/components/common/theme-locale-control';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 
 interface LoginFormTranslations {
   signInTitle: string;
@@ -52,7 +52,14 @@ const LoginRenderBlock = ({ translations }: LoginRenderBlockProps) => {
         <div className="space-y-2 text-center">
           <Link href={`/${locale}`} className="inline-flex items-center gap-2">
             <div className="bg-primary flex h-12 w-12 items-center justify-center rounded-xl">
-              <Code2 className="text-primary-foreground h-7 w-7" />
+              <Image
+                src="/images/logo.png"
+                alt="Logo"
+                width={48}
+                height={48}
+                priority
+                className=""
+              />
             </div>
           </Link>
           <h1 className="text-2xl font-bold">CodeBin</h1>
@@ -75,7 +82,6 @@ const LoginRenderBlock = ({ translations }: LoginRenderBlockProps) => {
           </CardContent>
         </Card>
 
-        {/* Footer */}
         <p className="text-muted-foreground text-center text-sm">
           {translations.followTerms}{' '}
           <Link

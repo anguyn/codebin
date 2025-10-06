@@ -14,13 +14,10 @@ export function LocaleInitializer({
   const { setLocale, setHydrated, isHydrated } = useLocaleStore();
   const currentNextIntlLocale = useCurrentLocale();
 
-  // ✅ Memoize setLocale to prevent unnecessary re-renders
   const initializeLocale = useCallback(() => {
     if (!isHydrated) {
-      // Rehydrate store from localStorage
       useLocaleStore.persist.rehydrate();
 
-      // Use current next-intl locale (most accurate)
       setLocale(currentNextIntlLocale);
       setHydrated(true);
     }

@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { Button as Button2 } from '@/components/common/button';
 import { Badge } from '@/components/common/badge';
 import {
   Card,
@@ -17,16 +18,82 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useCurrentUser } from '@/lib/hooks/use-current-user';
 import { DeleteSnippetDialog } from '@/components/blocks/delete-snippet-dialog';
+import { cn } from '@/lib/utils';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
+
+interface SnippetTranslations {
+  share: string;
+  save: string;
+  saved: string;
+  edit: string;
+  delete: string;
+  views: string;
+  saves: string;
+  code: string;
+  timeComplexity: string;
+  estimatedComplexity: string;
+  complexityDisclaimer: string;
+  aboutAuthor: string;
+  viewProfile: string;
+  loginToSave: string;
+}
 
 interface SnippetViewBlockProps {
   snippet: Snippet;
   locale: string;
+  isFavorited: boolean;
+  translations: SnippetTranslations;
 }
 
-export function SnippetViewBlock({ snippet, locale }: SnippetViewBlockProps) {
+export function SnippetViewBlock({
+  snippet,
+  locale,
+  isFavorited: initialIsFavorited,
+  translations,
+}: SnippetViewBlockProps) {
   const languageColor = getLanguageColor(snippet.language.name);
   const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/snippets/${snippet.slug}`;
   const { user } = useCurrentUser();
+  const router = useRouter();
+  const tC = useTranslations('common');
+
+  const [isFavorited, setIsFavorited] = useState(initialIsFavorited);
+  const [favoriteCount, setFavoriteCount] = useState(
+    snippet._count?.favorites || 0,
+  );
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleFavoriteToggle = async () => {
+    if (!user) {
+      toast.error(translations.loginToSave);
+      router.push(
+        `/${locale}/login?callbackUrl=/${locale}/snippets/${snippet.slug}`,
+      );
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const res = await fetch(`/api/snippets/${snippet.id}/favorite`, {
+        method: isFavorited ? 'DELETE' : 'POST',
+      });
+
+      if (!res.ok) throw new Error('Failed to update favorite');
+
+      setIsFavorited(!isFavorited);
+      setFavoriteCount(prev => (isFavorited ? prev - 1 : prev + 1));
+
+      toast.success(isFavorited ? tC('favoriteRemoved') : tC('favoriteAdded'));
+    } catch (error) {
+      toast.error(tC('favoriteError'));
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -43,17 +110,35 @@ export function SnippetViewBlock({ snippet, locale }: SnippetViewBlockProps) {
               )}
             </div>
             <div className="flex gap-2">
-              <CopyButton text={shareUrl} label="Share" />
-              <Button variant="outline" size="sm">
-                <Heart className="mr-2 h-4 w-4" />
-                Save
-              </Button>
+              <CopyButton text={shareUrl} label={translations.share} />
+              {user && (
+                <Button2
+                  variant="outline"
+                  size="sm"
+                  onClick={handleFavoriteToggle}
+                  disabled={isLoading}
+                  className="hover:cursor-pointer"
+                >
+                  <Heart
+                    className={cn(
+                      'mr-2 h-4 w-4',
+                      isFavorited && 'fill-current text-red-500',
+                    )}
+                  />
+                  {isFavorited ? translations.saved : translations.save}
+                </Button2>
+              )}
               {user?.id == snippet.user.id && (
                 <>
-                  <Button asChild variant="outline" size="sm">
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="sm"
+                    className="h-[36px]"
+                  >
                     <Link href={`/${locale}/snippets/${snippet.slug}/edit`}>
                       <Edit className="mr-2 h-4 w-4" />
-                      Edit
+                      {translations.edit}
                     </Link>
                   </Button>
                   <DeleteSnippetDialog
@@ -67,7 +152,6 @@ export function SnippetViewBlock({ snippet, locale }: SnippetViewBlockProps) {
             </div>
           </div>
 
-          {/* Meta Info */}
           <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--color-muted-foreground)]">
             <Link
               href={`/${locale}/users/${snippet.user.username}`}
@@ -94,15 +178,14 @@ export function SnippetViewBlock({ snippet, locale }: SnippetViewBlockProps) {
             </div>
             <div className="flex items-center gap-1">
               <Eye className="h-4 w-4" />
-              {snippet.viewCount} views
+              {snippet.viewCount} {translations.views}
             </div>
             <div className="flex items-center gap-1">
               <Heart className="h-4 w-4" />
-              {snippet._count?.favorites || 0} saves
+              {favoriteCount} {translations.saves}
             </div>
           </div>
 
-          {/* Tags */}
           <div className="flex flex-wrap gap-2">
             <Badge
               style={{
@@ -135,10 +218,12 @@ export function SnippetViewBlock({ snippet, locale }: SnippetViewBlockProps) {
           </div>
         </div>
 
-        {/* Code Block */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-lg">Code</CardTitle>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Code className="h-5 w-5" />
+              {translations.code}
+            </CardTitle>
             <CopyButton text={snippet.code} />
           </CardHeader>
           <CardContent className="p-0">
@@ -158,13 +243,11 @@ export function SnippetViewBlock({ snippet, locale }: SnippetViewBlockProps) {
           </CardContent>
         </Card>
 
-        {/* Complexity Analysis */}
         {snippet.complexity && (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
-                <Code className="h-5 w-5" />
-                Time Complexity Analysis
+                {translations.timeComplexity}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -174,22 +257,22 @@ export function SnippetViewBlock({ snippet, locale }: SnippetViewBlockProps) {
                     {snippet.complexity}
                   </span>
                   <span className="text-[var(--color-muted-foreground)]">
-                    Estimated time complexity
+                    {translations.estimatedComplexity}
                   </span>
                 </div>
                 <p className="text-sm text-[var(--color-muted-foreground)]">
-                  This is an automated analysis. The actual complexity may vary
-                  based on implementation details.
+                  {translations.complexityDisclaimer}
                 </p>
               </div>
             </CardContent>
           </Card>
         )}
 
-        {/* Author Card */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">About the Author</CardTitle>
+            <CardTitle className="text-lg">
+              {translations.aboutAuthor}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-start gap-4">
@@ -216,7 +299,7 @@ export function SnippetViewBlock({ snippet, locale }: SnippetViewBlockProps) {
                 )}
                 <Button variant="outline" size="sm" asChild>
                   <Link href={`/${locale}/users/${snippet.user.username}`}>
-                    View Profile
+                    {translations.viewProfile}
                   </Link>
                 </Button>
               </div>

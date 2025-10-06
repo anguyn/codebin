@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/server/auth';
 
-// GET - Lấy danh sách favorites của user
 export async function GET(request: Request) {
   try {
     const session = await auth();

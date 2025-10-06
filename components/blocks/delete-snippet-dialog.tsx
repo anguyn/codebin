@@ -13,6 +13,7 @@ import {
 } from '@/components/common/card';
 import { toast } from 'sonner';
 import { Loader2, Trash2, AlertTriangle, X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface DeleteSnippetDialogProps {
   snippetId: string;
@@ -27,6 +28,7 @@ export function DeleteSnippetDialog({
   locale,
   onClose,
 }: DeleteSnippetDialogProps) {
+  const t = useTranslations('deleteSnippet');
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -65,14 +67,14 @@ export function DeleteSnippetDialog({
         throw new Error('Failed to delete snippet');
       }
 
-      toast.success('Snippet deleted successfully');
+      toast.success(t('toast.success'));
       handleClose();
       setTimeout(() => {
         router.push(`/${locale}/my-snippets`);
         router.refresh();
       }, 300);
     } catch (error) {
-      toast.error('Failed to delete snippet');
+      toast.error(t('toast.error'));
       setIsDeleting(false);
     }
   };
@@ -86,7 +88,7 @@ export function DeleteSnippetDialog({
         className="gap-2"
       >
         <Trash2 className="h-4 w-4" />
-        Delete
+        {t('actions.delete')}
       </Button>
     );
   }
@@ -98,17 +100,14 @@ export function DeleteSnippetDialog({
       }`}
       onClick={handleClose}
     >
-      {/* Backdrop */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
 
-      {/* Dialog */}
       <Card
         className={`relative w-full max-w-md transform transition-all duration-200 ${
           isAnimating ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
         }`}
         onClick={e => e.stopPropagation()}
       >
-        {/* Close button */}
         <button
           onClick={handleClose}
           disabled={isDeleting}
@@ -124,9 +123,9 @@ export function DeleteSnippetDialog({
               <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-500" />
             </div>
             <div className="flex-1 pt-1">
-              <CardTitle className="text-xl">Delete Snippet</CardTitle>
+              <CardTitle className="text-xl">{t('title')}</CardTitle>
               <CardDescription className="mt-1">
-                This action cannot be undone
+                {t('description')}
               </CardDescription>
             </div>
           </div>
@@ -134,11 +133,7 @@ export function DeleteSnippetDialog({
 
         <CardContent className="pb-6">
           <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-            Are you sure you want to delete{' '}
-            <span className="font-semibold text-gray-900 dark:text-gray-100">
-              "{snippetTitle}"
-            </span>
-            ? This will permanently remove the snippet and all associated data.
+            {t('confirm', { title: snippetTitle })}
           </p>
         </CardContent>
 
@@ -149,7 +144,7 @@ export function DeleteSnippetDialog({
             disabled={isDeleting}
             className="w-full sm:flex-1"
           >
-            Cancel
+            {t('actions.cancel')}
           </Button>
           <Button
             variant="destructive"
@@ -158,7 +153,7 @@ export function DeleteSnippetDialog({
             className="w-full sm:flex-1"
           >
             {isDeleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {isDeleting ? 'Deleting...' : 'Delete Snippet'}
+            {isDeleting ? t('actions.deleting') : t('actions.deleteSnippet')}
           </Button>
         </CardFooter>
       </Card>

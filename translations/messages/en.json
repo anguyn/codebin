@@ -11,7 +11,26 @@
     "edit": "Edit",
     "delete": "Delete",
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "signedOutSuccess": "Signed out successfully",
+    "signedOutError": "Failed to sign out",
+    "mySnippets": "My Snippets",
+    "favorites": "Favorites",
+    "settings": "Settings",
+    "avatarAlt": "User avatar",
+    "popularLanguages": "Popular Languages",
+    "viewAllLanguages": "View all languages →",
+    "trendingTopics": "Trending Topics",
+    "viewAllTopics": "View all topics →",
+    "copyLabel": "Copy",
+    "copySuccess": "Copied to clipboard!",
+    "copyError": "Failed to copy",
+    "copied": "Copied!",
+    "favoriteAdded": "Added to favorites",
+    "favoriteRemoved": "Removed from favorites",
+    "favoriteError": "Something went wrong. Please try again.",
+    "editorEnterCode": "Enter your code here...",
+    "editorLoading": "Loading editor..."
   },
   "snippet": {
     "title": "Title",
@@ -25,6 +44,21 @@
     "deleteSnippet": "Delete Snippet",
     "publicSnippet": "Public Snippet",
     "shareUrl": "Share URL"
+  },
+  "deleteSnippet": {
+    "title": "Delete Snippet",
+    "description": "This action cannot be undone.",
+    "confirm": "Are you sure you want to delete \"{title}\"? This will permanently remove the snippet and all associated data.",
+    "actions": {
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleteSnippet": "Delete Snippet",
+      "deleting": "Deleting..."
+    },
+    "toast": {
+      "success": "Snippet deleted successfully.",
+      "error": "Failed to delete snippet."
+    }
   },
   "login": {
     "verificationTitle": "Security verification",
@@ -89,6 +123,49 @@
     "accountCreatedSuccess": "Account created successfully! Please sign in.",
     "somethingWentWrong": "Something went wrong",
     "copyright": "© 2025 CodeBin. All rights reserved."
+  },
+  "snippetForm": {
+    "title": "Title",
+    "titlePlaceholder": "e.g., Binary Search Implementation",
+    "description": "Description",
+    "descriptionPlaceholder": "Brief description of what this code does...",
+    "language": "Language",
+    "code": "Code",
+    "codePlaceholder": "// Start coding here...",
+    "complexity": "Time Complexity (Optional)",
+    "analyze": "Analyze",
+    "complexityPlaceholder": "e.g., O(n), O(log n), O(n²)",
+    "complexityHint": "Click \"Analyze\" to automatically detect time complexity or enter manually",
+    "tags": "Tags",
+    "languageTag": "Language Tag (auto-generated)",
+    "topicTags": "Topic Tags (Max 5)",
+    "topicTagPlaceholder": "Add a topic tag...",
+    "add": "Add",
+    "public": "Make this snippet public",
+    "create": "Create Snippet",
+    "update": "Update Snippet",
+    "cancel": "Cancel",
+    "confirmLeave": "You have unsaved changes. Are you sure you want to leave?",
+    "analyzeError": "Failed to analyze complexity",
+    "analyzeEmpty": "Please enter some code first",
+    "analyzeSuccess": "Complexity detected: {complexity}",
+    "saveError": "Failed to save snippet",
+    "saveSuccessCreate": "Snippet created successfully!",
+    "saveSuccessUpdate": "Snippet updated successfully!",
+    "generalError": "Something went wrong",
+    "validation": {
+      "titleMin": "Title must be at least 3 characters",
+      "codeRequired": "Code is required",
+      "languageRequired": "Language is required",
+      "maxTags": "Maximum 5 topic tags allowed"
+    }
+  },
+  "notFound": {
+    "title": "404",
+    "description": "It seems you've lost your way. The page you're looking for doesn't exist or has been moved.",
+    "back": "Go back",
+    "home": "Go to homepage",
+    "contact": "If you believe this is a mistake, please contact us."
   },
   "dashboard": {
     "title": "Dashboard",

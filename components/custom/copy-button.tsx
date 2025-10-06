@@ -5,6 +5,7 @@ import { Button } from '@/components/common/button';
 import { Check, Copy } from 'lucide-react';
 import { copyToClipboard } from '@/lib/utils';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 interface CopyButtonProps {
   text: string;
@@ -12,16 +13,16 @@ interface CopyButtonProps {
 }
 
 export function CopyButton({ text, label = 'Copy' }: CopyButtonProps) {
+  const t = useTranslations('common');
   const [isCopied, setIsCopied] = useState(false);
-
   const handleCopy = async () => {
     const success = await copyToClipboard(text);
     if (success) {
       setIsCopied(true);
-      toast.success('Copied to clipboard!');
+      toast.success(t('copySuccess'));
       setTimeout(() => setIsCopied(false), 2000);
     } else {
-      toast.error('Failed to copy');
+      toast.error(t('copyError'));
     }
   };
 
@@ -30,7 +31,7 @@ export function CopyButton({ text, label = 'Copy' }: CopyButtonProps) {
       {isCopied ? (
         <>
           <Check className="h-4 w-4" />
-          Copied!
+          {t('copied')}
         </>
       ) : (
         <>

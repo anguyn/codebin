@@ -3,7 +3,6 @@ import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { auth } from '@/lib/server/auth';
 
-// GET - Lấy thông tin user hiện tại
 export async function GET() {
   try {
     const session = await auth();
@@ -45,7 +44,6 @@ export async function GET() {
   }
 }
 
-// PUT - Cập nhật profile
 export async function PUT(request: Request) {
   try {
     const session = await auth();
@@ -57,7 +55,6 @@ export async function PUT(request: Request) {
     const body = await request.json();
     const { name, bio, image, username, currentPassword, newPassword } = body;
 
-    // Nếu đổi password, kiểm tra password cũ
     if (newPassword) {
       if (!currentPassword) {
         return NextResponse.json(
@@ -110,7 +107,6 @@ export async function PUT(request: Request) {
       return NextResponse.json(updatedUser);
     }
 
-    // Kiểm tra username đã tồn tại chưa
     if (username) {
       const existingUser = await prisma.user.findFirst({
         where: {
@@ -155,7 +151,6 @@ export async function PUT(request: Request) {
   }
 }
 
-// DELETE - Xóa tài khoản
 export async function DELETE(request: Request) {
   try {
     const session = await auth();
@@ -191,7 +186,6 @@ export async function DELETE(request: Request) {
       );
     }
 
-    // Xóa user (cascade sẽ xóa snippets, favorites, etc.)
     await prisma.user.delete({
       where: { id: session.user.id },
     });

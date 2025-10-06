@@ -13,8 +13,11 @@ import { RegisterForm } from './register-form';
 import { useLocale } from '@/lib/hooks/use-locale';
 import { ThemeLocaleControls } from '@/components/common/theme-locale-control';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 
 interface RegisterFormTranslations {
+  pageDescription: string;
+  subTitle: string;
   name: string;
   namePlaceholder: string;
   email: string;
@@ -24,6 +27,7 @@ interface RegisterFormTranslations {
   confirmPassword: string;
   confirmPasswordPlaceholder: string;
   createAccount: string;
+  signUpTitle: string;
   alreadyHaveAccount: string;
   signIn: string;
   nameMinLength: string;
@@ -33,6 +37,9 @@ interface RegisterFormTranslations {
   registrationFailed: string;
   accountCreatedSuccess: string;
   somethingWentWrong: string;
+  followTerms: string;
+  tos: string;
+  pp: string;
 }
 
 interface RegisterRenderBlockProps {
@@ -52,19 +59,24 @@ const RegisterRenderBlock = ({ translations }: RegisterRenderBlockProps) => {
         <div className="space-y-2 text-center">
           <Link href={`/${locale}`} className="inline-flex items-center gap-2">
             <div className="bg-primary flex h-12 w-12 items-center justify-center rounded-xl">
-              <Code2 className="text-primary-foreground h-7 w-7" />
+              <Image
+                src="/images/logo.png"
+                alt="Logo"
+                width={48}
+                height={48}
+                priority
+                className=""
+              />
             </div>
           </Link>
           <h1 className="text-2xl font-bold">CodeBin</h1>
-          <p className="text-muted-foreground">
-            Share your code with the world
-          </p>
+          <p className="text-muted-foreground">{translations.subTitle}</p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>{t('createAccount')}</CardTitle>
-            <CardDescription>{t('signUpTitle')}</CardDescription>
+            <CardTitle>{translations.pageDescription}</CardTitle>
+            <CardDescription>{translations.signUpTitle}</CardDescription>
           </CardHeader>
           <CardContent>
             <RegisterForm locale={locale} translations={translations} />
@@ -72,19 +84,19 @@ const RegisterRenderBlock = ({ translations }: RegisterRenderBlockProps) => {
         </Card>
 
         <p className="text-muted-foreground text-center text-sm">
-          By continuing, you agree to our{' '}
+          {translations.followTerms}{' '}
           <Link
             href={`/${locale}/terms`}
             className="hover:text-foreground underline"
           >
-            Terms of Service
+            {translations.tos}
           </Link>{' '}
           and{' '}
           <Link
             href={`/${locale}/privacy`}
             className="hover:text-foreground underline"
           >
-            Privacy Policy
+            {translations.pp}
           </Link>
         </p>
         <p className="text-center">{t('copyright')}</p>

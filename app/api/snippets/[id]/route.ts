@@ -121,7 +121,6 @@ export async function PUT(
     const { title, description, code, languageId, tags, isPublic, complexity } =
       body;
 
-    // Validate language exists
     let language = snippet.language;
     if (languageId && languageId !== snippet.languageId) {
       const languageExists = await prisma.language.findUnique({
@@ -136,18 +135,15 @@ export async function PUT(
       language = languageExists;
     }
 
-    // Generate unique slug if title changed
     let slug = snippet.slug;
     if (title && title !== snippet.title) {
       slug = await generateUniqueSlug(title, params.id);
     }
 
-    // Delete existing tag connections
     await prisma.snippetOnTag.deleteMany({
       where: { snippetId: params.id },
     });
 
-    // Create new tag connections với language tag
     const topicTags = tags?.topicTags || [];
     const tagConnections = await createTagConnections(
       topicTags,

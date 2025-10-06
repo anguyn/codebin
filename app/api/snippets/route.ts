@@ -3,21 +3,23 @@ import { auth } from '@/lib/server/auth';
 import { prisma } from '@/lib/prisma';
 import slugify from 'slugify';
 
-// GET - Lấy danh sách snippets
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const languageId = searchParams.get('languageId');
-    const tag = searchParams.get('tag');
+    const languageSlug = searchParams.get('language');
+    const tagSlug = searchParams.get('tag');
     const userId = searchParams.get('userId');
     const search = searchParams.get('search');
+    const sortBy = searchParams.get('sortBy') || 'recent';
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
 
     const where: any = { isPublic: true };
 
-    if (languageId) {
-      where.languageId = languageId;
+    if (languageSlug) {
+      where.language = {
+        slug: languageSlug,
+      };
     }
 
     if (userId) {
@@ -25,11 +27,12 @@ export async function GET(request: Request) {
       delete where.isPublic;
     }
 
-    if (tag) {
+    if (tagSlug) {
       where.tags = {
         some: {
           tag: {
-            slug: tag,
+            slug: tagSlug,
+            type: 'TOPIC',
           },
         },
       };
@@ -41,6 +44,14 @@ export async function GET(request: Request) {
         { description: { contains: search, mode: 'insensitive' } },
         { code: { contains: search, mode: 'insensitive' } },
       ];
+    }
+
+    let orderBy: any = { createdAt: 'desc' };
+
+    if (sortBy === 'viewed') {
+      orderBy = { viewCount: 'desc' };
+    } else if (sortBy === 'liked') {
+      orderBy = { favorites: { _count: 'desc' } };
     }
 
     const [snippets, total] = await Promise.all([
@@ -75,9 +86,7 @@ export async function GET(request: Request) {
             },
           },
         },
-        orderBy: {
-          createdAt: 'desc',
-        },
+        orderBy,
         skip: (page - 1) * limit,
         take: limit,
       }),
@@ -102,7 +111,6 @@ export async function GET(request: Request) {
   }
 }
 
-// POST - Tạo snippet mới
 export async function POST(request: Request) {
   try {
     const session = await auth();
@@ -112,15 +120,8 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const {
-      title,
-      description,
-      code,
-      languageId,
-      tags, // { languageTag, topicTags }
-      isPublic,
-      complexity,
-    } = body;
+    const { title, description, code, languageId, tags, isPublic, complexity } =
+      body;
 
     if (!title || !code || !languageId) {
       return NextResponse.json(
@@ -129,7 +130,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Verify language exists
     const language = await prisma.language.findUnique({
       where: { id: languageId },
     });
@@ -138,7 +138,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid language' }, { status: 400 });
     }
 
-    // Generate unique slug
     let slug = slugify(title, { lower: true, strict: true });
     let slugExists = await prisma.snippet.findUnique({ where: { slug } });
     let counter = 1;
@@ -149,10 +148,8 @@ export async function POST(request: Request) {
       counter++;
     }
 
-    // Process tags
     const tagConnections = [];
 
-    // 1. Tạo/lấy language tag (type: LANGUAGE)
     if (tags?.languageTag) {
       const langTagSlug = slugify(tags.languageTag, {
         lower: true,
@@ -180,7 +177,6 @@ export async function POST(request: Request) {
       });
     }
 
-    // 2. Tạo/lấy topic tags (type: TOPIC)
     if (tags?.topicTags && Array.isArray(tags.topicTags)) {
       for (const tagName of tags.topicTags) {
         const tagSlug = slugify(tagName, { lower: true, strict: true });

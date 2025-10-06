@@ -10,6 +10,7 @@ import { Input } from '@/components/common/input';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
+// import { useRouterWithProgress } from '@/lib/hooks/use-router-with-progress';
 
 const registerSchema = z
   .object({
@@ -100,7 +101,7 @@ export function RegisterForm({ locale, translations }: RegisterFormProps) {
       <div className="space-y-2">
         <div className="mb-2">
           <label htmlFor="name" className="text-sm font-medium">
-            {translations.name}
+            {translations.name} <span className="text-red-400">*</span>
           </label>
         </div>
         <Input
@@ -118,7 +119,7 @@ export function RegisterForm({ locale, translations }: RegisterFormProps) {
       <div className="space-y-2">
         <div className="mb-2">
           <label htmlFor="email" className="text-sm font-medium">
-            {translations.email}
+            {translations.email} <span className="text-red-400">*</span>
           </label>
         </div>
         <Input
@@ -136,7 +137,7 @@ export function RegisterForm({ locale, translations }: RegisterFormProps) {
       <div className="space-y-2">
         <div className="mb-2">
           <label htmlFor="password" className="text-sm font-medium">
-            {translations.password}
+            {translations.password} <span className="text-red-400">*</span>
           </label>
         </div>
         <Input
@@ -154,7 +155,8 @@ export function RegisterForm({ locale, translations }: RegisterFormProps) {
       <div className="space-y-2">
         <div className="mb-2">
           <label htmlFor="confirmPassword" className="text-sm font-medium">
-            {translations.confirmPassword}
+            {translations.confirmPassword}{' '}
+            <span className="text-red-400">*</span>
           </label>
         </div>
         <Input

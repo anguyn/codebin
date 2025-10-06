@@ -1,7 +1,5 @@
 'use client';
 
-// import { Toaster } from '#/components/custom-ui/toaster';
-// import { ToastProvider } from '#/components/custom-ui/use-toast';
 import { ThemeProvider } from 'next-themes';
 import { PropsWithChildren } from 'react';
 import { LocaleInitializer } from './locale-initializer';
@@ -20,7 +18,7 @@ const Providers = ({ children, locale }: ProvidersProps) => {
         defaultTheme="system"
         enableSystem
         disableTransitionOnChange
-        storageKey="code-bin" // Custom storage key
+        storageKey="code-bin"
       >
         <LocaleInitializer initialLocale={locale} />
         <div id="site-wrapper">

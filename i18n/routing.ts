@@ -13,6 +13,47 @@ export const { Link, redirect, usePathname, useRouter } =
   createNavigation(routing);
 
 export interface DictionaryStructure {
+  common: {
+    share: string;
+    save: string;
+    saved: string;
+    edit: string;
+    delete: string;
+    views: string;
+    saves: string;
+    code: string;
+    explore: string;
+    snippets: string;
+    tags: string;
+    search: string;
+    create: string;
+    description: string;
+    product: string;
+    createSnippet: string;
+    legal: string;
+    privacy: string;
+    terms: string;
+    cookiePolicy: string;
+    copyright: string;
+    previous: string;
+    next: string;
+  };
+  home: {
+    title: string;
+    pageDescription: string;
+    heroTitle: string;
+    heroTitleHighlight: string;
+    heroDescription: string;
+    createSnippet: string;
+    exploreSnippets: string;
+    instantAnalysisTitle: string;
+    instantAnalysisDesc: string;
+    communityDrivenTitle: string;
+    communityDrivenDesc: string;
+    ctaTitle: string;
+    ctaDescription: string;
+    getStartedFree: string;
+  };
   login: {
     title: string;
     subTitle: string;
@@ -40,7 +81,9 @@ export interface DictionaryStructure {
   register: {
     title: string;
     subTitle: string;
+    signUpTitle: string;
     pageDescription: string;
+    createAccount: string;
     name: string;
     namePlaceholder: string;
     email: string;
@@ -65,6 +108,54 @@ export interface DictionaryStructure {
     followTerms: string;
     tos: string;
     pp: string;
+  };
+  favorites: {
+    title: string;
+    pageDescription: string;
+    savedSnippet: string;
+    pluralSuffix: string;
+    noFavoritesYet: string;
+    noFavoritesDescription: string;
+  };
+  snippets: {
+    notFound: string;
+    timeComplexity: string;
+    estimatedComplexity: string;
+    complexityDisclaimer: string;
+    aboutAuthor: string;
+    viewProfile: string;
+    loginToSave: string;
+    title: string;
+    pageDescription: string;
+    allSnippets: string;
+    searchResults: string;
+    snippetsFound: string;
+    snippetFound: string;
+    mostRecent: string;
+    mostViewed: string;
+    mostLiked: string;
+    language: string;
+    tag: string;
+    search: string;
+    noSnippetsFound: string;
+    createTitle: string;
+    createDescription: string;
+  };
+  search: {
+    description: string;
+    search: string;
+    searchResults: string;
+    foundResults: string;
+    result: string;
+    results: string;
+    for: string;
+    all: string;
+    snippets: string;
+    tags: string;
+    users: string;
+    enterSearchQuery: string;
+    noResultsFound: string;
+    snippetsCount: string;
   };
   api: {
     snippet: {

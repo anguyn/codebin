@@ -22,7 +22,6 @@ const eslintConfig = [
   },
   {
     rules: {
-      // Tắt các rule về unused variables và imports
       "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-empty-object-type": "off",
@@ -35,11 +34,9 @@ const eslintConfig = [
       "@typescript-eslint/no-unnecessary-type-constraint": "off",
       "@typescript-eslint/no-array-constructor": "off",
       
-      // Tắt các rule về React
       "react/no-unescaped-entities": "off",
       "react-hooks/exhaustive-deps": "off",
       
-      // Tắt các rule về Next.js
       "@next/next/no-img-element": "off",
     },
   },

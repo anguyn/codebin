@@ -9,7 +9,6 @@ const intlMiddleware = createMiddleware(routing);
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // only treat the first segment as locale if it is 'en' or 'vi'
   const localeMatch = pathname.match(/^\/(en|vi)(?=\/|$)/);
   const locale = localeMatch ? localeMatch[1] : 'en';
 
@@ -28,18 +27,14 @@ export default async function middleware(request: NextRequest) {
     '/snippets/new',
   ];
 
-  // remove leading /en or /vi if present so we can check route matching reliably
   const basePath = pathname.replace(/^\/(en|vi)/, '');
 
-  // Redirect authenticated users away from auth pages
   if (authRoutes.some(route => basePath.startsWith(route)) && session) {
     return NextResponse.redirect(new URL(`/${locale}`, request.nextUrl.origin));
   }
 
-  // Redirect unauthenticated users away from protected pages
   if (protectedRoutes.some(route => basePath.startsWith(route)) && !session) {
     const loginUrl = new URL(`/${locale}/login`, request.nextUrl.origin);
-    // use the raw pathname (includes locale if present) as callback
     loginUrl.searchParams.set('callbackUrl', request.nextUrl.pathname);
     return NextResponse.redirect(loginUrl);
   }

@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Code Snippet Sharing Platform
 
-## Getting Started
+A simple web application where developers can share their code snippets, tag them by language or topic, and get a basic estimation of time complexity.
 
-First, run the development server:
+This project was developed as part of the **Developer Technical Test** for **YrismVN**.
+
+---
+
+## 🧩 Features
+
+### ✅ Core Features
+
+- **CRUD Snippets:** Create, edit, and delete your code snippets easily.
+- **Tag System:** Tag snippets by language (e.g., JavaScript, Python) and topic (e.g., Algorithm, UI).
+- **Snippet Details:** Each snippet has a unique sharable URL.
+- **Public Profiles:** View a user's shared snippets on their profile page.
+- **Search & Filter:** Quickly find snippets by keyword or tag.
+- **Responsive Design:** Optimized for both desktop and mobile.
+- **Internationalization (i18n):** Supports English and Vietnamese.
+- **Authentication:** Basic email/password login & registration (mocked for demo).
+- **SEO Ready:** Basic meta tags and titles for better visibility.
+
+### ⚡ Bonus Features
+
+- **Time Complexity Analyzer:** Automatically estimates code complexity (e.g., `O(n)`, `O(n²)`, `O(log n)`).
+- **Image Thumbnails:** Snippets can include a small thumbnail preview.
+- **Infinite Scroll / Pagination:** Load snippets smoothly with pagination or auto-scroll.
+- **Dark Mode:** (Optional if implemented).
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework:** [Next.js 14](https://nextjs.org/)
+- **Styling:** [TailwindCSS](https://tailwindcss.com/)
+- **UI Components:** [shadcn/ui](https://ui.shadcn.com/)
+- **State Management:** [Zustand](https://github.com/pmndrs/zustand)
+- **i18n:** [next-intl](https://next-intl-docs.vercel.app/)
+- **Form Handling:** [React Hook Form](https://react-hook-form.com/)
+- **Deployment:** [Render](https://render.com/)
+
+---
+
+## 🧠 How to Run Locally
+
+### 1️⃣ Clone the Repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/anguyn/codebin.git
+cd project-repo
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2️⃣ Install Dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Make sure you have **Node.js v18+** installed.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+yarn install
+```
 
-## Learn More
+### 3️⃣ Add Environment Variables
 
-To learn more about Next.js, take a look at the following resources:
+Create a `.env.local` file in the project root (you can also use the `.env` file attached in the email).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Example:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```env
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/api
+```
 
-## Deploy on Vercel
+### 4️⃣ Run the Development Server
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+yarn dev
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The app should now be available at:  
+👉 http://localhost:3000
+
+---
+
+## 📷 Demo (Live)
+
+**Live Demo:** [https://codebin-quzx.onrender.com/](https://codebin-quzx.onrender.com/)  
+_(Please note that since this uses a free-tier deployment on Render, it may take 1–5 minutes to wake up if inactive.)_
+
+---
+
+## 👤 Test Account
+
+| Email                | Password |
+| -------------------- | -------- |
+| anguynvn99@gmail.com | An@1234  |
+
+---
+
+## 💬 Notes
+
+- This project was completed within the given time frame (30–45 minutes).
+- Some parts might be simplified or incomplete due to time constraints.
+- The focus was on structure, modular design, and demonstrating problem-solving skills.
+
+---
+
+## 📧 Contact
+
+If there are any issues accessing the project or running it locally, please feel free to contact me.
+
+**An Nguyen**  
+📩 anguynvn99@gmail.com  
+📞 07837676750

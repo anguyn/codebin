@@ -15,7 +15,8 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { User, Settings, Heart, LogOut, Code2 } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { signOut } from '@/lib/server/auth';
+import { signOut } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 
 interface UserMenuProps {
   locale: string;
@@ -24,6 +25,7 @@ interface UserMenuProps {
 export function UserMenu({ locale }: UserMenuProps) {
   const { user, isAuthenticated, isLoading } = useCurrentUser();
   const router = useRouter();
+  const t = useTranslations('common');
 
   if (isLoading) {
     return (
@@ -35,10 +37,10 @@ export function UserMenu({ locale }: UserMenuProps) {
     return (
       <div className="flex items-center gap-2">
         <Button variant="ghost" asChild>
-          <Link href={`/${locale}/login`}>Sign In</Link>
+          <Link href={`/${locale}/login`}>{t('signIn')}</Link>
         </Button>
         <Button asChild>
-          <Link href={`/${locale}/register`}>Sign Up</Link>
+          <Link href={`/${locale}/register`}>{t('signUp')}</Link>
         </Button>
       </div>
     );
@@ -47,10 +49,10 @@ export function UserMenu({ locale }: UserMenuProps) {
   const handleSignOut = async () => {
     try {
       await signOut();
-      toast.success('Signed out successfully');
+      toast.success(t('signedOutSuccess'));
       router.refresh();
     } catch (error) {
-      toast.error('Failed to sign out');
+      toast.error(t('signedOutError'));
     }
   };
 
@@ -65,10 +67,10 @@ export function UserMenu({ locale }: UserMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" asChild className="p-0">
+        <Button variant="ghost" asChild className="p-0 hover:cursor-pointer">
           <Avatar
-            className="bg-muted h-10 w-10 overflow-hidden rounded-full"
-            aria-label={user?.name ?? 'User avatar'}
+            className="bg-muted h-9 w-9 overflow-hidden rounded-full"
+            aria-label={user?.name ?? t('avatarAlt')}
           >
             {user?.image ? (
               <AvatarImage
@@ -100,34 +102,32 @@ export function UserMenu({ locale }: UserMenuProps) {
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <div className="cursor-not-allowed">
-            {/* <Link href={`/${locale}/profile`} className="cursor-pointer"> */}
             <User className="mr-2 h-4 w-4" />
-            Profile
-            {/* </Link> */}
+            {t('profile')}
           </div>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href={`/${locale}/my-snippets`} className="cursor-pointer">
             <Code2 className="mr-2 h-4 w-4" />
-            My Snippets
+            {t('mySnippets')}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href={`/${locale}/favorites`} className="cursor-pointer">
             <Heart className="mr-2 h-4 w-4" />
-            Favorites
+            {t('favorites')}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <div className="cursor-not-allowed">
             <Settings className="mr-2 h-4 w-4" />
-            Settings
+            {t('settings')}
           </div>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
-          Sign Out
+          {t('signOut')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

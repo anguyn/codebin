@@ -15,7 +15,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check if user exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
@@ -27,10 +26,8 @@ export async function POST(request: Request) {
       );
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Generate unique username
     let username = name
       ? slugify(name, { lower: true, strict: true })
       : email.split('@')[0];
@@ -43,7 +40,6 @@ export async function POST(request: Request) {
       counter++;
     }
 
-    // Create user
     const user = await prisma.user.create({
       data: {
         email,

@@ -58,3 +58,17 @@ export interface PaginationMeta {
   total: number;
   totalPages: number;
 }
+
+export interface Language {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string | null;
+  color: string | null;
+}
+
+export interface SearchResults {
+  snippets: Snippet[];
+  tags: Tag[];
+  users: User[];
+}

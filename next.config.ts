@@ -17,7 +17,6 @@ const nextConfig: NextConfig = {
         ],
     },
     webpack: (config, { isServer }) => {
-        // Áp dụng cho cả client và server
         config.snapshot = {
             ...config.snapshot,
             managedPaths: [/^(.+?[\\/]node_modules[\\/])/],
