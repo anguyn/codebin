@@ -41,6 +41,7 @@ function Button({
   variant,
   size,
   asChild = false,
+  disabled,
   ...props
 }: React.ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
@@ -51,7 +52,11 @@ function Button({
   return (
     <Comp
       data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(
+        buttonVariants({ variant, size, className }),
+        disabled ? 'cursor-not-allowed' : 'hover:cursor-pointer',
+      )}
+      disabled={disabled}
       {...props}
     />
   );

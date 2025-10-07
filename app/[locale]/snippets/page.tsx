@@ -17,6 +17,7 @@ async function getSnippets(searchParams: {
   tag?: string;
   search?: string;
   sortBy?: string;
+  limit?: string;
 }): Promise<{ snippets: Snippet[]; pagination: PaginationMeta }> {
   try {
     const params = new URLSearchParams();
@@ -25,6 +26,7 @@ async function getSnippets(searchParams: {
     if (searchParams.tag) params.set('tag', searchParams.tag);
     if (searchParams.search) params.set('search', searchParams.search);
     if (searchParams.sortBy) params.set('sortBy', searchParams.sortBy);
+    params.set('limit', searchParams.limit || '10');
 
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/snippets?${params.toString()}`,
@@ -34,7 +36,7 @@ async function getSnippets(searchParams: {
     if (!res.ok) {
       return {
         snippets: [],
-        pagination: { page: 1, limit: 20, total: 0, totalPages: 0 },
+        pagination: { page: 1, limit: 10, total: 0, totalPages: 0 },
       };
     }
 
@@ -43,7 +45,7 @@ async function getSnippets(searchParams: {
     console.error('Failed to fetch snippets:', error);
     return {
       snippets: [],
-      pagination: { page: 1, limit: 20, total: 0, totalPages: 0 },
+      pagination: { page: 1, limit: 10, total: 0, totalPages: 0 },
     };
   }
 }

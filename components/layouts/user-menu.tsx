@@ -48,7 +48,7 @@ export function UserMenu({ locale }: UserMenuProps) {
 
   const handleSignOut = async () => {
     try {
-      await signOut();
+      await signOut({ redirect: false });
       toast.success(t('signedOutSuccess'));
       router.refresh();
     } catch (error) {

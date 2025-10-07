@@ -73,7 +73,7 @@ export function LoginForm({
       } else {
         toast.success(translations.loginSuccess);
         await update();
-        router.push(`/${locale}${callbackUrl}`);
+        router.push(`${callbackUrl}`);
         router.refresh();
       }
     } catch (error) {

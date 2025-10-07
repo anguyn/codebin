@@ -42,10 +42,6 @@ function isValidLocale(locale: string): locale is LocaleProps {
 
 async function getMetadata(locale: string): Promise<MetaData> {
   try {
-    console.log(
-      'Fetching metadata for locale:',
-      `${process.env.NEXT_PUBLIC_APP_URL}/meta/${locale}.json`,
-    );
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/meta/${locale}.json`,
       { cache: 'force-cache' },

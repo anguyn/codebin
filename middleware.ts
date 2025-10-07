@@ -7,7 +7,7 @@ import { auth } from '@/lib/server/auth';
 const intlMiddleware = createMiddleware(routing);
 
 export default async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, searchParams } = request.nextUrl;
 
   const localeMatch = pathname.match(/^\/(en|vi)(?=\/|$)/);
   const locale = localeMatch ? localeMatch[1] : 'en';
@@ -25,11 +25,18 @@ export default async function middleware(request: NextRequest) {
     '/profile',
     '/settings',
     '/snippets/new',
+    '/favorites',
   ];
 
   const basePath = pathname.replace(/^\/(en|vi)/, '');
 
   if (authRoutes.some(route => basePath.startsWith(route)) && session) {
+    const callbackUrl = searchParams.get('callbackUrl');
+    if (callbackUrl) {
+      return NextResponse.redirect(
+        new URL(callbackUrl, request.nextUrl.origin),
+      );
+    }
     return NextResponse.redirect(new URL(`/${locale}`, request.nextUrl.origin));
   }
 

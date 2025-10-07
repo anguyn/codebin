@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { formatCookies, serverFetch } from '@/lib/utils';
 import { MainLayout } from '@/components/layouts/main-layout';
-import { Snippet } from '@/types';
+import { Snippet, PaginationMeta } from '@/types';
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/server/auth';
 import {
@@ -18,19 +18,33 @@ export const generateStaticParams = getStaticParams;
 async function getFavorites(
   userId: string,
   cookieHeader: string,
-): Promise<Snippet[]> {
+  searchParams: { page?: string; limit?: string },
+): Promise<{ favorites: Snippet[]; pagination: PaginationMeta }> {
   try {
+    const params = new URLSearchParams();
+    if (searchParams.page) params.set('page', searchParams.page);
+    params.set('limit', searchParams.limit || '10');
+
     const res = await serverFetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/users/me/favorites`,
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/users/me/favorites?${params.toString()}`,
       cookieHeader,
       { cache: 'no-store' },
     );
 
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.favorites || [];
+    if (!res.ok) {
+      return {
+        favorites: [],
+        pagination: { page: 1, limit: 10, total: 0, totalPages: 0 },
+      };
+    }
+
+    return await res.json();
   } catch (error) {
-    return [];
+    console.error('Failed to fetch favorites:', error);
+    return {
+      favorites: [],
+      pagination: { page: 1, limit: 10, total: 0, totalPages: 0 },
+    };
   }
 }
 
@@ -57,6 +71,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 
 export default async function FavoritesPage(props: PageProps) {
   const params = await props.params;
+  const searchParams = await props.searchParams;
   const { locale } = params;
 
   setStaticParamsLocale(locale);
@@ -70,7 +85,6 @@ export default async function FavoritesPage(props: PageProps) {
   const t = await translate(dictionaries);
 
   const session = await auth();
-
   if (!session) {
     redirect(`/${locale}/auth/login?callbackUrl=/${locale}/favorites`);
   }
@@ -79,7 +93,20 @@ export default async function FavoritesPage(props: PageProps) {
   const allCookies = cookieStore.getAll();
   const cookieHeader = formatCookies(allCookies);
 
-  const favorites = await getFavorites(session.user.id, cookieHeader);
+  const normalizeParam = (
+    param: string | string[] | undefined,
+  ): string | undefined => {
+    if (Array.isArray(param)) return param[0];
+    return param;
+  };
+
+  const { favorites, pagination } = await getFavorites(
+    session.user.id,
+    cookieHeader,
+    {
+      page: normalizeParam(searchParams?.page),
+    },
+  );
 
   const favoritesTranslations = {
     title: t.favorites.title,
@@ -87,14 +114,20 @@ export default async function FavoritesPage(props: PageProps) {
     pluralSuffix: t.favorites.pluralSuffix,
     noFavoritesYet: t.favorites.noFavoritesYet,
     noFavoritesDescription: t.favorites.noFavoritesDescription,
+    previous: t.common.previous || 'Previous',
+    next: t.common.next || 'Next',
   };
 
   return (
     <MainLayout locale={locale as string}>
       <FavoritesRenderBlock
         favorites={favorites}
+        pagination={pagination}
         translations={favoritesTranslations}
         locale={locale as string}
+        searchParams={{
+          page: normalizeParam(searchParams?.page),
+        }}
       />
     </MainLayout>
   );

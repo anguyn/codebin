@@ -7,7 +7,7 @@ import {
 import { PageProps } from '@/types/global';
 import { Metadata } from 'next';
 import { TagDetailRenderBlock } from '@/components/blocks/pages/tags/detail/render';
-import { Tag, Snippet } from '@/types';
+import { Tag, Snippet, PaginationMeta } from '@/types';
 import { notFound } from 'next/navigation';
 import { LocaleProps } from '@/i18n/config';
 
@@ -27,18 +27,41 @@ async function getTag(slug: string): Promise<Tag | null> {
   }
 }
 
-async function getSnippetsByTag(tagSlug: string): Promise<Snippet[]> {
+async function getSnippetsByTag(
+  tagSlug: string,
+  searchParams: {
+    page?: string;
+    sortBy?: string;
+    limit?: string;
+  },
+): Promise<{ snippets: Snippet[]; pagination: PaginationMeta }> {
   try {
+    const params = new URLSearchParams();
+    params.set('tag', tagSlug);
+    if (searchParams.page) params.set('page', searchParams.page);
+    if (searchParams.sortBy) params.set('sortBy', searchParams.sortBy);
+
+    params.set('limit', searchParams.limit || '10');
+
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/snippets?tag=${tagSlug}`,
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/snippets?${params.toString()}`,
       { cache: 'no-store' },
     );
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.snippets || [];
+
+    if (!res.ok) {
+      return {
+        snippets: [],
+        pagination: { page: 1, limit: 10, total: 0, totalPages: 0 },
+      };
+    }
+
+    return await res.json();
   } catch (error) {
     console.error('Failed to fetch snippets by tag:', error);
-    return [];
+    return {
+      snippets: [],
+      pagination: { page: 1, limit: 10, total: 0, totalPages: 0 },
+    };
   }
 }
 
@@ -46,6 +69,11 @@ interface TagDetailPageProps {
   params: Promise<{
     locale: string;
     slug: string;
+  }>;
+  searchParams?: Promise<{
+    page?: string;
+    sortBy?: string;
+    limit?: string;
   }>;
 }
 
@@ -77,8 +105,12 @@ export async function generateMetadata({
   };
 }
 
-export default async function TagDetailPage({ params }: TagDetailPageProps) {
+export default async function TagDetailPage({
+  params,
+  searchParams,
+}: TagDetailPageProps) {
   const { locale, slug } = await params;
+  const resolvedSearchParams = await searchParams;
 
   setStaticParamsLocale(locale as LocaleProps);
   const { translate } = await getTranslate();
@@ -90,9 +122,20 @@ export default async function TagDetailPage({ params }: TagDetailPageProps) {
 
   const t = await translate(dictionaries);
 
-  const [tag, snippets] = await Promise.all([
+  const normalizeParam = (
+    param: string | string[] | undefined,
+  ): string | undefined => {
+    if (Array.isArray(param)) return param[0];
+    return param;
+  };
+
+  const [tag, { snippets, pagination }] = await Promise.all([
     getTag(slug),
-    getSnippetsByTag(slug),
+    getSnippetsByTag(slug, {
+      page: normalizeParam(resolvedSearchParams?.page),
+      sortBy: normalizeParam(resolvedSearchParams?.sortBy),
+      limit: normalizeParam(resolvedSearchParams?.limit),
+    }),
   ]);
 
   if (!tag) {
@@ -107,6 +150,11 @@ export default async function TagDetailPage({ params }: TagDetailPageProps) {
     found: t.tags.found || 'found',
     noSnippetsFound:
       t.tags.noSnippetsFound || 'No snippets found for this tag yet.',
+    mostRecent: t.snippets.mostRecent || 'Most Recent',
+    mostViewed: t.snippets.mostViewed || 'Most Viewed',
+    mostLiked: t.snippets.mostLiked || 'Most Liked',
+    previous: t.common.previous || 'Previous',
+    next: t.common.next || 'Next',
   };
 
   return (
@@ -116,6 +164,12 @@ export default async function TagDetailPage({ params }: TagDetailPageProps) {
         translations={tagDetailTranslations}
         tag={tag}
         snippets={snippets}
+        pagination={pagination}
+        searchParams={{
+          page: normalizeParam(resolvedSearchParams?.page),
+          sortBy: normalizeParam(resolvedSearchParams?.sortBy),
+          limit: normalizeParam(resolvedSearchParams?.limit),
+        }}
       />
     </MainLayout>
   );

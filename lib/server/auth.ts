@@ -11,7 +11,7 @@ export const authConfig: NextAuthConfig = {
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 30 * 24 * 60 * 60,
   },
   pages: {
     signIn: '/login',
@@ -65,7 +65,6 @@ export const authConfig: NextAuthConfig = {
   ],
   callbacks: {
     async jwt({ token, user, trigger, session }) {
-      // Khi user mới đăng nhập
       if (user) {
         token.id = user.id!;
         token.username = user.username!;
@@ -73,7 +72,6 @@ export const authConfig: NextAuthConfig = {
         token.image = user.image || null;
       }
 
-      // Khi update session từ client (dùng update() function)
       if (trigger === 'update' && session) {
         if (session.username !== undefined) token.username = session.username;
         if (session.bio !== undefined) token.bio = session.bio || null;

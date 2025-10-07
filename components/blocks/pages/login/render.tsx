@@ -13,6 +13,7 @@ import { useLocale } from '@/lib/hooks/use-locale';
 import { ThemeLocaleControls } from '@/components/common/theme-locale-control';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 
 interface LoginFormTranslations {
   signInTitle: string;
@@ -35,6 +36,7 @@ interface LoginFormTranslations {
   tos: string;
   pp: string;
 }
+
 interface LoginRenderBlockProps {
   translations: LoginFormTranslations;
 }
@@ -42,6 +44,9 @@ interface LoginRenderBlockProps {
 const LoginRenderBlock = ({ translations }: LoginRenderBlockProps) => {
   const { locale } = useLocale();
   const t = useTranslations('login');
+  const searchParams = useSearchParams();
+
+  const callbackUrl = searchParams.get('callbackUrl') || `/${locale}`;
 
   return (
     <div className="from-background to-secondary/20 relative flex min-h-screen items-center justify-center bg-gradient-to-br p-4">
@@ -78,7 +83,11 @@ const LoginRenderBlock = ({ translations }: LoginRenderBlockProps) => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <LoginForm locale={locale} translations={translations} />
+            <LoginForm
+              locale={locale}
+              translations={translations}
+              callbackUrl={callbackUrl}
+            />
           </CardContent>
         </Card>
 
