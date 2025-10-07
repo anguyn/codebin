@@ -1,5 +1,5 @@
 import { MainLayout } from '@/components/layouts/main-layout';
-import { EditSnippetBlock } from '@/components/blocks/pages/snippets/edit/render';
+import { SnippetEditBlock } from '@/components/blocks/pages/snippets/edit/render';
 import {
   Card,
   CardDescription,
@@ -77,7 +77,7 @@ export default async function EditSnippetPage({
 
   return (
     <MainLayout locale={locale}>
-      <EditSnippetBlock
+      <SnippetEditBlock
         title={locale == 'en' ? 'Edit Snippet' : 'Chỉnh Sửa Đoạn Mã'}
         snippet={snippet}
         languages={languages}

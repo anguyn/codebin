@@ -22,17 +22,17 @@ interface SnippetTranslations {
   description: string;
 }
 
-interface CreateSnippetBlockProps {
+interface SnippetCreateBlockProps {
   languages: Language[];
   locale: string;
   translations: SnippetTranslations;
 }
 
-export function CreateSnippetBlock({
+export function SnippetCreateBlock({
   languages,
   locale,
   translations,
-}: CreateSnippetBlockProps) {
+}: SnippetCreateBlockProps) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mx-auto">

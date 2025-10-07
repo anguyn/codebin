@@ -26,12 +26,15 @@ interface HomeTranslations {
   getStartedFree: string;
 }
 
-interface HomeBlockProps {
+interface HomeRenderBlockProps {
   locale: string;
   translations: HomeTranslations;
 }
 
-export function HomeBlock({ locale, translations }: HomeBlockProps) {
+export function HomeRenderBlock({
+  locale,
+  translations,
+}: HomeRenderBlockProps) {
   const { user } = useCurrentUser();
 
   return (

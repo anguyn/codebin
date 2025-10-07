@@ -11,7 +11,7 @@ import {
 } from '@/i18n/server';
 import { PageProps } from '@/types/global';
 import { Metadata } from 'next';
-import { FavoritesBlock } from '@/components/blocks/pages/favorites/render';
+import { FavoritesRenderBlock } from '@/components/blocks/pages/favorites/render';
 
 export const generateStaticParams = getStaticParams;
 
@@ -91,7 +91,7 @@ export default async function FavoritesPage(props: PageProps) {
 
   return (
     <MainLayout locale={locale as string}>
-      <FavoritesBlock
+      <FavoritesRenderBlock
         favorites={favorites}
         translations={favoritesTranslations}
         locale={locale as string}

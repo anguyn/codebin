@@ -13,17 +13,17 @@ interface FavoritesTranslations {
   noFavoritesDescription: string;
 }
 
-interface FavoritesBlockProps {
+interface FavoritesRenderBlockProps {
   favorites: Snippet[];
   translations: FavoritesTranslations;
   locale: string;
 }
 
-export function FavoritesBlock({
+export function FavoritesRenderBlock({
   favorites,
   translations,
   locale,
-}: FavoritesBlockProps) {
+}: FavoritesRenderBlockProps) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mx-auto space-y-6">

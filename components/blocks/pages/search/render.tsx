@@ -7,7 +7,7 @@ import { SearchResults } from '@/types';
 import { Search, Code, Hash, User as UserIcon } from 'lucide-react';
 import Link from 'next/link';
 
-interface SearchBlockProps {
+interface SearchRenderBlockProps {
   results: SearchResults;
   query: string;
   type: string;
@@ -28,13 +28,13 @@ interface SearchBlockProps {
   };
 }
 
-export function SearchBlock({
+export function SearchRenderBlock({
   results,
   query,
   type,
   locale,
   translations: t,
-}: SearchBlockProps) {
+}: SearchRenderBlockProps) {
   const snippets = results?.snippets || [];
   const tags = results?.tags || [];
   const users = results?.users || [];

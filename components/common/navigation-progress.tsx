@@ -82,7 +82,7 @@ export function NavigationProgress() {
 
   return (
     <div
-      className="pointer-events-none fixed top-0 right-0 left-0 z-[9999] h-[1.5px]"
+      className="pointer-events-none fixed top-0 right-0 left-0 z-[9999] h-[2.5px]"
       style={{
         opacity: progress === 100 ? 0 : 1,
         transition: progress === 100 ? 'opacity 0.2s ease-out' : 'none',

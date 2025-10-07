@@ -6,7 +6,7 @@ import {
 } from '@/i18n/server';
 import { PageProps } from '@/types/global';
 import { Metadata } from 'next';
-import { HomeBlock } from '@/components/blocks/pages/home/render';
+import { HomeRenderBlock } from '@/components/blocks/pages/home/render';
 
 export const generateStaticParams = getStaticParams;
 
@@ -64,7 +64,10 @@ export default async function HomePage(props: PageProps) {
 
   return (
     <MainLayout locale={locale as string}>
-      <HomeBlock locale={locale as string} translations={homeTranslations} />
+      <HomeRenderBlock
+        locale={locale as string}
+        translations={homeTranslations}
+      />
     </MainLayout>
   );
 }

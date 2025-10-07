@@ -3,7 +3,7 @@ import { auth } from '@/lib/server/auth';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 import { getTranslate, setStaticParamsLocale } from '@/i18n/server';
-import { CreateSnippetBlock } from '@/components/blocks/pages/snippets/create/render';
+import { SnippetCreateBlock } from '@/components/blocks/pages/snippets/create/render';
 import { PageProps } from '@/types/global';
 import { Metadata } from 'next';
 
@@ -70,7 +70,7 @@ export default async function NewSnippetPage({
 
   return (
     <MainLayout locale={locale}>
-      <CreateSnippetBlock
+      <SnippetCreateBlock
         locale={locale}
         languages={languages}
         translations={snippetTranslations}

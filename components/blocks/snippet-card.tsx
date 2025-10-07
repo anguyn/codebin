@@ -23,7 +23,7 @@ export function SnippetCard({ snippet, locale }: SnippetCardProps) {
   const languageColor = getLanguageColor(snippet.language?.name || 'other');
 
   return (
-    <Card className="overflow-hidden transition-shadow hover:shadow-lg">
+    <Card className="flex h-full flex-col overflow-hidden transition-shadow hover:shadow-lg">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
           <Link href={`/${locale}/snippets/${snippet.slug}`} className="flex-1">
@@ -45,8 +45,8 @@ export function SnippetCard({ snippet, locale }: SnippetCardProps) {
         )}
       </CardHeader>
 
-      <CardContent className="pb-3">
-        <div className="code-block">
+      <CardContent className="flex flex-1 flex-col pb-3">
+        <div className="code-block flex-1">
           <SyntaxHighlighter
             language={snippet.language?.name || 'other'}
             style={vscDarkPlus}

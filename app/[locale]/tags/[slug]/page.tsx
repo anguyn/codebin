@@ -1,11 +1,17 @@
 import { MainLayout } from '@/components/layouts/main-layout';
-import { Sidebar } from '@/components/layouts/sidebar';
-import { SnippetCard } from '@/components/blocks/snippet-card';
-import { Badge } from '@/components/common/badge';
-import { Tag, Snippet } from '@/types';
-import { Hash, Code } from 'lucide-react';
-import { notFound } from 'next/navigation';
+import {
+  getTranslate,
+  setStaticParamsLocale,
+  getStaticParams,
+} from '@/i18n/server';
+import { PageProps } from '@/types/global';
 import { Metadata } from 'next';
+import { TagDetailRenderBlock } from '@/components/blocks/pages/tags/detail/render';
+import { Tag, Snippet } from '@/types';
+import { notFound } from 'next/navigation';
+import { LocaleProps } from '@/i18n/config';
+
+export const generateStaticParams = getStaticParams;
 
 async function getTag(slug: string): Promise<Tag | null> {
   try {
@@ -16,6 +22,7 @@ async function getTag(slug: string): Promise<Tag | null> {
     const tags: Tag[] = await res.json();
     return tags.find(t => t.slug === slug) || null;
   } catch (error) {
+    console.error('Failed to fetch tag:', error);
     return null;
   }
 }
@@ -30,39 +37,59 @@ async function getSnippetsByTag(tagSlug: string): Promise<Snippet[]> {
     const data = await res.json();
     return data.snippets || [];
   } catch (error) {
+    console.error('Failed to fetch snippets by tag:', error);
     return [];
   }
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
-  const { slug } = await params;
-  const tag = await getTag(slug);
-
-  if (!tag) {
-    return {
-      title: 'Tag Not Found',
-    };
-  }
-
-  return {
-    title: `${tag.name} - Browse Snippets`,
-    description: `Explore ${tag._count?.snippets || 0} code snippets tagged with ${tag.name}`,
-  };
-}
-
-export default async function TagDetailPage({
-  params,
-}: {
+interface TagDetailPageProps {
   params: Promise<{
     locale: string;
     slug: string;
   }>;
-}) {
+}
+
+export async function generateMetadata({
+  params,
+}: TagDetailPageProps): Promise<Metadata> {
   const { locale, slug } = await params;
+  const tag = await getTag(slug);
+
+  setStaticParamsLocale(locale as LocaleProps);
+  const { translate } = await getTranslate();
+
+  const dictionaries = {
+    en: (await import('@/translations/dictionaries/en.json')).default,
+    vi: (await import('@/translations/dictionaries/vi.json')).default,
+  };
+
+  const t = await translate(dictionaries);
+
+  if (!tag) {
+    return {
+      title: t.tags.notFound || 'Tag Not Found',
+    };
+  }
+
+  return {
+    title: `${tag.name} - ${t.tags.browseSnippets || 'Browse Snippets'}`,
+    description: `${t.tags.explore || 'Explore'} ${tag._count?.snippets || 0} ${t.tags.codeSnippetsTagged || 'code snippets tagged with'} ${tag.name}`,
+  };
+}
+
+export default async function TagDetailPage({ params }: TagDetailPageProps) {
+  const { locale, slug } = await params;
+
+  setStaticParamsLocale(locale as LocaleProps);
+  const { translate } = await getTranslate();
+
+  const dictionaries = {
+    en: (await import('@/translations/dictionaries/en.json')).default,
+    vi: (await import('@/translations/dictionaries/vi.json')).default,
+  };
+
+  const t = await translate(dictionaries);
+
   const [tag, snippets] = await Promise.all([
     getTag(slug),
     getSnippetsByTag(slug),
@@ -72,57 +99,24 @@ export default async function TagDetailPage({
     notFound();
   }
 
+  const tagDetailTranslations = {
+    language: t.tags.language || 'Language',
+    topic: t.tags.topic || 'Topic',
+    snippet: t.tags.snippet || 'snippet',
+    snippets: t.tags.snippets || 'snippets',
+    found: t.tags.found || 'found',
+    noSnippetsFound:
+      t.tags.noSnippetsFound || 'No snippets found for this tag yet.',
+  };
+
   return (
-    <MainLayout locale={locale}>
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col gap-8 lg:flex-row">
-          <Sidebar locale={locale} />
-
-          <div className="flex-1 space-y-6">
-            <div className="space-y-4">
-              <div className="flex items-center gap-4">
-                <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-[var(--color-primary)]/10">
-                  {tag.type === 'LANGUAGE' ? (
-                    <Code className="h-8 w-8 text-[var(--color-primary)]" />
-                  ) : (
-                    <Hash className="h-8 w-8 text-[var(--color-primary)]" />
-                  )}
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h1 className="text-3xl font-bold">{tag.name}</h1>
-                    <Badge variant="secondary">
-                      {tag.type === 'LANGUAGE' ? 'Language' : 'Topic'}
-                    </Badge>
-                  </div>
-                  <p className="mt-1 text-[var(--color-muted-foreground)]">
-                    {snippets.length} snippet{snippets.length !== 1 ? 's' : ''}{' '}
-                    found
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {snippets.length > 0 ? (
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                {snippets.map(snippet => (
-                  <SnippetCard
-                    key={snippet.id}
-                    snippet={snippet}
-                    locale={locale}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="rounded-lg border border-dashed border-[var(--color-border)] py-12 text-center">
-                <p className="text-lg text-[var(--color-muted-foreground)]">
-                  No snippets found for this tag yet.
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+    <MainLayout locale={locale as string}>
+      <TagDetailRenderBlock
+        locale={locale as string}
+        translations={tagDetailTranslations}
+        tag={tag}
+        snippets={snippets}
+      />
     </MainLayout>
   );
 }

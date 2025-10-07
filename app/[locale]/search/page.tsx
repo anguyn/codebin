@@ -4,7 +4,7 @@ import { MainLayout } from '@/components/layouts/main-layout';
 import { SearchResults } from '@/types';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import { SearchBlock } from '@/components/blocks/pages/search/render';
+import { SearchRenderBlock } from '@/components/blocks/pages/search/render';
 import {
   getTranslate,
   setStaticParamsLocale,
@@ -117,7 +117,7 @@ export default async function SearchPage({
 
   return (
     <MainLayout locale={locale}>
-      <SearchBlock
+      <SearchRenderBlock
         results={results}
         query={query}
         type={searchType}

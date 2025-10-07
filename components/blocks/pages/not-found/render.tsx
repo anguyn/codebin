@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/common/card';
 import { ArrowLeft } from 'lucide-react';
 
-export default function NotFoundBlock() {
+export default function NotFoundRenderBlock() {
   const router = useRouter();
   const t = useTranslations('notFound');
 

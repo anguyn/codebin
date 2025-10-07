@@ -157,6 +157,46 @@ export interface DictionaryStructure {
     noResultsFound: string;
     snippetsCount: string;
   };
+  tags: {
+    title: string;
+    pageDescription: string;
+    browseByTags: string;
+    description: string;
+    topics: string;
+    languages: string;
+    snippet: string;
+    snippets: string;
+    noTopicsFound: string;
+    noLanguagesFound: string;
+    notFound: string;
+    browseSnippets: string;
+    explore: string;
+    codeSnippetsTagged: string;
+    language: string;
+    topic: string;
+    found: string;
+    noSnippetsFound: string;
+  };
+  userProfile: {
+    notFound: string;
+    profile: string;
+    viewProfile: string;
+    codeSnippetsAndProfile: string;
+    editProfile: string;
+    joined: string;
+    snippet: string;
+    snippets: string;
+    snippetsLabel: string;
+    views: string;
+    favorites: string;
+    languages: string;
+    topLanguages: string;
+    mySnippets: string;
+    publicSnippets: string;
+    createNew: string;
+    noSnippetsYet: string;
+    noPublicSnippets: string;
+  };
   api: {
     snippet: {
       notFound: string;

@@ -1,14 +1,15 @@
 import { MainLayout } from '@/components/layouts/main-layout';
-import { Badge } from '@/components/common/badge';
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/common/card';
+  getTranslate,
+  setStaticParamsLocale,
+  getStaticParams,
+} from '@/i18n/server';
+import { PageProps } from '@/types/global';
+import { Metadata } from 'next';
+import { TagsRenderBlock } from '@/components/blocks/pages/tags/render';
 import { Tag } from '@/types';
-import { Hash, Code } from 'lucide-react';
-import Link from 'next/link';
+
+export const generateStaticParams = getStaticParams;
 
 async function getTags(): Promise<Tag[]> {
   try {
@@ -18,106 +19,83 @@ async function getTags(): Promise<Tag[]> {
     if (!res.ok) return [];
     return await res.json();
   } catch (error) {
+    console.error('Failed to fetch tags:', error);
     return [];
   }
 }
 
-export const metadata = {
-  title: 'Browse Tags',
-  description: 'Explore code snippets by tags and topics',
-};
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
+  const { locale } = params;
 
-export default async function TagsPage({
-  params,
-}: {
-  params: Promise<{
-    locale: string;
-    searchParams: { type?: string };
-  }>;
-}) {
-  const { locale, searchParams } = await params;
+  setStaticParamsLocale(locale);
+  const { translate } = await getTranslate();
+
+  const dictionaries = {
+    en: (await import('@/translations/dictionaries/en.json')).default,
+    vi: (await import('@/translations/dictionaries/vi.json')).default,
+  };
+
+  const t = await translate(dictionaries);
+
+  return {
+    title: t.tags.title || 'Browse Tags',
+    description:
+      t.tags.pageDescription || 'Explore code snippets by tags and topics',
+    keywords: 'tags, topics, programming languages, browse',
+  };
+}
+
+export default async function TagsPage(props: PageProps) {
+  const params = await props.params;
+  const searchParams = await props.searchParams;
+  const { locale } = params;
+
+  setStaticParamsLocale(locale);
+  const { translate } = await getTranslate();
+
+  const dictionaries = {
+    en: (await import('@/translations/dictionaries/en.json')).default,
+    vi: (await import('@/translations/dictionaries/vi.json')).default,
+  };
+
+  const t = await translate(dictionaries);
+
   const allTags = await getTags();
   const topicTags = allTags.filter(t => t.type === 'TOPIC');
   const languageTags = allTags.filter(t => t.type === 'LANGUAGE');
 
-  const displayTags =
-    searchParams?.type === 'language' ? languageTags : topicTags;
-  const title = searchParams?.type === 'language' ? 'Languages' : 'Topics';
+  const normalizeParam = (
+    param: string | string[] | undefined,
+  ): string | undefined => {
+    if (Array.isArray(param)) return param[0];
+    return param;
+  };
+
+  const tagsTranslations = {
+    browseByTags: t.tags.browseByTags || 'Browse by Tags',
+    description:
+      t.tags.description ||
+      'Discover code snippets organized by programming languages and topics',
+    topics: t.tags.topics || 'Topics',
+    languages: t.tags.languages || 'Languages',
+    snippet: t.tags.snippet || 'snippet',
+    snippets: t.tags.snippets || 'snippets',
+    noTopicsFound: t.tags.noTopicsFound || 'No topics found',
+    noLanguagesFound: t.tags.noLanguagesFound || 'No languages found',
+  };
 
   return (
-    <MainLayout locale={locale}>
-      <div className="container mx-auto px-4 py-8">
-        <div className="mx-auto space-y-8">
-          <div className="space-y-4">
-            <h1 className="text-4xl font-bold">Browse by Tags</h1>
-            <p className="text-lg text-[var(--color-muted-foreground)]">
-              Discover code snippets organized by programming languages and
-              topics
-            </p>
-
-            <div className="flex gap-2 border-b border-[var(--color-border)]">
-              <Link
-                href={`/${locale}/tags`}
-                className={`border-b-2 px-4 py-2 transition-colors ${
-                  !searchParams?.type || searchParams?.type === 'topic'
-                    ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
-                    : 'border-transparent text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]'
-                }`}
-              >
-                Topics ({topicTags.length})
-              </Link>
-              <Link
-                href={`/${locale}/tags?type=language`}
-                className={`border-b-2 px-4 py-2 transition-colors ${
-                  searchParams?.type === 'language'
-                    ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
-                    : 'border-transparent text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]'
-                }`}
-              >
-                Languages ({languageTags.length})
-              </Link>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {displayTags.map(tag => (
-              <Link key={tag.id} href={`/${locale}/tags/${tag.slug}`}>
-                <Card className="h-full cursor-pointer pt-6 transition-shadow hover:shadow-lg">
-                  <CardContent className="p-6">
-                    <div className="mb-2 flex items-start justify-between">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--color-primary)]/10">
-                        {tag.type === 'LANGUAGE' ? (
-                          <Code className="h-5 w-5 text-[var(--color-primary)]" />
-                        ) : (
-                          <Hash className="h-5 w-5 text-[var(--color-primary)]" />
-                        )}
-                      </div>
-                      <Badge variant="secondary">
-                        {tag._count?.snippets || 0}
-                      </Badge>
-                    </div>
-                    <h3 className="mb-1 text-lg font-semibold">{tag.name}</h3>
-                    <p className="text-sm text-[var(--color-muted-foreground)]">
-                      {tag._count?.snippets || 0} snippet
-                      {tag._count?.snippets !== 1 ? 's' : ''}
-                    </p>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
-
-          {displayTags.length === 0 && (
-            <Card>
-              <CardContent className="p-12 text-center">
-                <p className="text-[var(--color-muted-foreground)]">
-                  No {title.toLowerCase()} found
-                </p>
-              </CardContent>
-            </Card>
-          )}
-        </div>
-      </div>
+    <MainLayout locale={locale as string}>
+      <TagsRenderBlock
+        locale={locale as string}
+        translations={tagsTranslations}
+        topicTags={topicTags}
+        languageTags={languageTags}
+        searchParams={{
+          type: normalizeParam(searchParams?.type),
+        }}
+      />
     </MainLayout>
   );
 }

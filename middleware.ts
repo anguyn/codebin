@@ -39,13 +39,6 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  const referer = request.headers.get('referer');
-  const isDirectAccess = !referer || !referer.includes(request.nextUrl.origin);
-
-  if ((pathname === '/en' || pathname === '/vi') && isDirectAccess) {
-    return NextResponse.redirect(new URL('/', request.nextUrl.origin));
-  }
-
   return intlMiddleware(request);
 }
 

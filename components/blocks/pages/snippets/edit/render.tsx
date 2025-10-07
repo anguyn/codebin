@@ -17,19 +17,19 @@ interface Language {
   color: string | null;
 }
 
-interface EditSnippetBlockProps {
+interface SnippetEditBlockProps {
   title: string;
   snippet: Snippet;
   languages: Language[];
   locale: string;
 }
 
-export function EditSnippetBlock({
+export function SnippetEditBlock({
   title,
   snippet,
   languages,
   locale,
-}: EditSnippetBlockProps) {
+}: SnippetEditBlockProps) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mx-auto">

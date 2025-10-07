@@ -101,16 +101,19 @@ export function UserMenu({ locale }: UserMenuProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <div className="cursor-not-allowed">
+          <Link
+            href={`/${locale}/users/${user?.username}`}
+            className="cursor-pointer"
+          >
             <User className="mr-2 h-4 w-4" />
             {t('profile')}
-          </div>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href={`/${locale}/my-snippets`} className="cursor-pointer">
+          <div className="hover:cursor-not-allowed">
             <Code2 className="mr-2 h-4 w-4" />
             {t('mySnippets')}
-          </Link>
+          </div>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href={`/${locale}/favorites`} className="cursor-pointer">

@@ -50,8 +50,11 @@ export const authConfig: NextAuthConfig = {
 
           return {
             id: user.id,
-            email: user.email,
-            name: user.name,
+            email: user.email!,
+            name: user.name || '',
+            username: user.username || '',
+            bio: user.bio || undefined,
+            image: user.image || undefined,
           };
         } catch (error) {
           console.error('Auth error:', error);
@@ -61,15 +64,31 @@ export const authConfig: NextAuthConfig = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      // Khi user mới đăng nhập
       if (user) {
-        token.id = user.id;
+        token.id = user.id!;
+        token.username = user.username!;
+        token.bio = user.bio || null;
+        token.image = user.image || null;
       }
+
+      // Khi update session từ client (dùng update() function)
+      if (trigger === 'update' && session) {
+        if (session.username !== undefined) token.username = session.username;
+        if (session.bio !== undefined) token.bio = session.bio || null;
+        if (session.name !== undefined) token.name = session.name;
+        if (session.image !== undefined) token.image = session.image || null;
+      }
+
       return token;
     },
     async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as string;
+      if (session.user && token.id) {
+        session.user.id = token.id;
+        session.user.username = token.username || '';
+        session.user.bio = token.bio || undefined;
+        session.user.image = token.image || undefined;
       }
       return session;
     },
