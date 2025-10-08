@@ -11,6 +11,8 @@ import { Tag, Snippet, PaginationMeta } from '@/types';
 import { notFound } from 'next/navigation';
 import { LocaleProps } from '@/i18n/config';
 
+export const dynamic = 'force-dynamic';
+
 export const generateStaticParams = getStaticParams;
 
 async function getTag(slug: string): Promise<Tag | null> {

@@ -4,13 +4,14 @@ import {
   setStaticParamsLocale,
   getStaticParams,
 } from '@/i18n/server';
-import { PageProps } from '@/types/global';
 import { Metadata } from 'next';
 import { UserProfileRenderBlock } from '@/components/blocks/pages/users/profile/render';
 import { User, Snippet } from '@/types';
 import { notFound } from 'next/navigation';
 import { auth } from '@/lib/server/auth';
 import { LocaleProps } from '@/i18n/config';
+
+export const dynamic = 'force-dynamic';
 
 export const generateStaticParams = getStaticParams;
 
