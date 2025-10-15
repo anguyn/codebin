@@ -2,8 +2,6 @@
 
 A simple web application where developers can share their code snippets, tag them by language or topic, and get a basic estimation of time complexity.
 
-This project was developed as part of the **Developer Technical Test** for **YrismVN**.
-
 ---
 
 ## 🧩 Features
